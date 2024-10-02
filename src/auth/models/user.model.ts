@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 import bcrypt from 'bcrypt';
 import { Roles } from "../types/roles.enum";
 import { User } from "../types/user.type";
+import { AuthSchemaNames } from "../types/auth-schema-names.enum";
 
 const userSchema = new Schema<User>({
     name: {
@@ -62,6 +63,6 @@ userSchema.pre("save", async function (next) {
     user.password = hashedPsw;
 });
 
-export const UserModel = model("User", userSchema);
+export const UserModel = model(AuthSchemaNames.USER, userSchema);
 
 UserModel.syncIndexes();
