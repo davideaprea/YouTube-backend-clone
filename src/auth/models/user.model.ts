@@ -21,6 +21,13 @@ const userSchema = new Schema<User>({
         unique: true,
         match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "The given email is not valid."]
     },
+    username: {
+        type: String,
+        required: [true, "The username is required."],
+        unique: true,
+        trim: true,
+        match: [/^[a-zA-Z0-9_]{3,16}$/, "The username is not valid."]
+    },
     password: {
         type: String,
         required: [true, "Password is required."],
@@ -35,7 +42,15 @@ const userSchema = new Schema<User>({
         type: Date,
         default: new Date(),
         immutable: true
-    }
+    },
+    birthday: Date,
+    country: String,
+    description: {
+        type: String,
+        maxlength: [500, "The description max length is 500 characters."],
+        trim: true
+    },
+    profilePic: String
 });
 
 userSchema.pre("save", async function (next) {

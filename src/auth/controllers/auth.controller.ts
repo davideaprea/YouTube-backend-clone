@@ -21,6 +21,10 @@ export const register: RequestHandler = async (req, res, next): Promise<void> =>
             return next(new HttpError(400, "This email is already taken."));
         }
 
+        if (keys?.username) {
+            return next(new HttpError(400, "This username is already taken."));
+        }
+
         return next(e);
     }
 

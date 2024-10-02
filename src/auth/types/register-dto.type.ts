@@ -5,5 +5,10 @@ export type RegisterDto = {
     surname?: string,
     email: string,
     password: string,
-    role: Roles
+    username: string,
+    role: Roles,
+    birthday?: Date,
+    country?: string,
+    description?: string,
+    profilePic?: string
 }
