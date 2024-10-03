@@ -5,11 +5,11 @@ import { postIdProperty, timeProperty, userIdProperty } from "../constants/post-
 import { VideoSchemaNames } from "../types/video-schema-names.enum";
 
 const commentSchema = new Schema<Comment>({
-    userId: { ...userIdProperty },
-    postId: { ...postIdProperty },
-    time: { ...timeProperty },
-    likes: { ...likesDislikesProperty },
-    dislikes: { ...likesDislikesProperty },
+    userId: userIdProperty,
+    postId: postIdProperty,
+    time: timeProperty,
+    likes: likesDislikesProperty,
+    dislikes: likesDislikesProperty,
     content: {
         type: String,
         maxlength: [1000, "Video descriptions can't have more than 1000 characters."],

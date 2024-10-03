@@ -7,17 +7,17 @@ export const postIdProperty = {
     immutable: true,
     type: Schema.Types.ObjectId,
     ref: VideoSchemaNames.VIDEO
-}
+} as const;
 
 export const userIdProperty = {
     required: true,
     immutable: true,
     type: Schema.Types.ObjectId,
     ref: AuthSchemaNames.USER
-}
+} as const;
 
 export const timeProperty = {
     type: Date,
     default: new Date(),
     immutable: true
-}
+} as const;
