@@ -12,8 +12,16 @@ const commentSchema = new Schema<Comment>({
     dislikes: likesDislikesProperty,
     content: {
         type: String,
-        maxlength: [1000, "Video descriptions can't have more than 1000 characters."],
+        maxlength: [500, "Comments can't have more than 500 characters."],
         trim: true
+    },
+    parentCommentId: {
+        type: Schema.Types.ObjectId,
+        ref: VideoSchemaNames.COMMENT
+    },
+    repliedToId: {
+        type: Schema.Types.ObjectId,
+        ref: VideoSchemaNames.COMMENT
     }
 });
 
