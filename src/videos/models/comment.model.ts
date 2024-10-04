@@ -1,13 +1,13 @@
 import { model, Schema } from "mongoose";
 import { Comment } from "../types/comment.type";
 import { likesDislikesProperty } from "../constants/likes-dislikes.property";
-import { videoIdProperty, timeProperty, userIdProperty } from "../constants/post-interaction.property";
+import { videoIdProperty, timeProperty, userIdProperty } from "../constants/video-interaction.property";
 import { VideoSchemaNames } from "../types/video-schema-names.enum";
 import { AuthSchemaNames } from "../../auth/types/auth-schema-names.enum";
 
 const commentSchema = new Schema<Comment>({
     userId: userIdProperty,
-    postId: videoIdProperty,
+    videoId: videoIdProperty,
     time: timeProperty,
     likes: likesDislikesProperty,
     dislikes: likesDislikesProperty,

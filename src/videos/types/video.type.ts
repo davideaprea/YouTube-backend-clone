@@ -6,7 +6,7 @@ export type Video = Likeable & Dislikeable & {
     readonly creatorId: Types.ObjectId,
     readonly createdAt: Date,
     title: string,
-    description: string,
+    description?: string,
     source: string,
     views: number
     thumbnail?: string

@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import { CommentLikeOrDislike } from "../types/comment-like-or-dislike.type";
-import { timeProperty, userIdProperty } from "../constants/post-interaction.property";
+import { timeProperty, userIdProperty } from "../constants/video-interaction.property";
 import { VideoSchemaNames } from "../types/video-schema-names.enum";
 
 const commentLikeDislikeSchema = new Schema<CommentLikeOrDislike>({

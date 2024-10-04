@@ -1,11 +1,11 @@
 import { model, Schema } from "mongoose";
 import { VideoSchemaNames } from "../types/video-schema-names.enum";
-import { userIdProperty, videoIdProperty, timeProperty } from "../constants/post-interaction.property";
-import { PostLikedOrDisliked } from "../types/post-liked-or-disliked.type";
+import { userIdProperty, videoIdProperty, timeProperty } from "../constants/video-interaction.property";
+import { VideoLikedOrDisliked } from "../types/video-liked-or-disliked.type";
 
-const likeDislike = new Schema<PostLikedOrDisliked>({
+const likeDislike = new Schema<VideoLikedOrDisliked>({
     userId: userIdProperty,
-    postId: videoIdProperty,
+    videoId: videoIdProperty,
     time: timeProperty,
     liked: {
         type: Boolean,

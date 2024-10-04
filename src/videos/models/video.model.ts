@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 import { Video } from "../types/video.type";
 import { VideoSchemaNames } from "../types/video-schema-names.enum";
 import { likesDislikesProperty } from "../constants/likes-dislikes.property";
-import { timeProperty, userIdProperty } from "../constants/post-interaction.property";
+import { timeProperty, userIdProperty } from "../constants/video-interaction.property";
 import { HttpError } from "../../core/utilities/http-error.class";
 
 const videoSchema = new Schema<Video>({

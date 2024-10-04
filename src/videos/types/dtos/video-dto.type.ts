@@ -1,6 +1,6 @@
-export type VideoDto = {
-    readonly creatorId: string,
-    title: string,
-    description: string,
-    source: Express.Multer.File
-}
+import { Video } from "../video.type";
+
+export type VideoDto = Pick<Video, "creatorId" | "title" | "description" | "allowComments" | "chapters"> & {
+    source: Express.Multer.File,
+    thumbnail: Express.Multer.File
+};
