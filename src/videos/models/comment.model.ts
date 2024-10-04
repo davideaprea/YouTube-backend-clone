@@ -24,7 +24,8 @@ const commentSchema = new Schema<Comment>({
     },
     repliedToId: {
         type: Schema.Types.ObjectId,
-        ref: AuthSchemaNames.USER
+        ref: AuthSchemaNames.USER,
+        immutable: true
     }
 });
 
