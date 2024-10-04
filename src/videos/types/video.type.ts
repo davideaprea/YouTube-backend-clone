@@ -10,5 +10,10 @@ export type Video = Likeable & Dislikeable & {
     source: string,
     views: number
     thumbnail?: string
-    allowComments: boolean
+    allowComments: boolean,
+    chapters?: {
+        from: number,
+        title: string
+    }[],
+    duration: number
 }
