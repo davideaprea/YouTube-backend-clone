@@ -4,6 +4,7 @@ import { globalErrorHandler } from './core/controllers/error.controller';
 import { HttpError } from './core/utilities/http-error.class';
 import cors from 'cors';
 import { config } from 'dotenv';
+import { videoRouter } from './videos/routes/video.router';
 
 config({ path: "./.env" });
 
@@ -13,6 +14,8 @@ app.use(cors());
 app.use(json());
 
 app.use("/v1/auth", authRouter);
+
+app.use("v1/videos", videoRouter);
 
 app.use(globalErrorHandler);
 
