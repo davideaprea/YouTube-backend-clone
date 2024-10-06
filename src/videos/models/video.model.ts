@@ -17,11 +17,6 @@ const videoSchema = new Schema<Video>({
         required: [true, "Video source is missing."],
         immutable: true
     },
-    duration: {
-        type: Number,
-        immutable: true,
-        required: true
-    },
     thumbnail: String,
     title: {
         type: String,
@@ -45,13 +40,7 @@ const videoSchema = new Schema<Video>({
         from: {
             required: [true, "Chapter's starting time is required."],
             type: Number,
-            min: 0,
-            validate: {
-                validator: function (value) {
-                    return value <= this.duration;
-                },
-                message: "Chapter 'from' must be less than or equal to the video duration."
-            }
+            min: 0
         },
         title: {
             type: [String, "Chapter's title is required."],

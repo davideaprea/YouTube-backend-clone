@@ -14,6 +14,5 @@ export type Video = Likeable & Dislikeable & {
     chapters?: {
         from: number,
         title: string
-    }[],
-    duration: number
+    }[]
 }

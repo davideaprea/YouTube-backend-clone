@@ -10,6 +10,7 @@ const s3Client = new S3Client({
     region: process.env.S3_BUCKET_REGION!
 });
 
+
 export const saveFile = async (file: Express.Multer.File, checkMime?: string): Promise<string | undefined> => {
     if (checkMime && !file.mimetype.startsWith(checkMime)) {
         throw new HttpError(400, "Please, provide a proper video source.");
@@ -17,7 +18,7 @@ export const saveFile = async (file: Express.Multer.File, checkMime?: string): P
 
     const sourceCommand: PutObjectCommandInput = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: randomUUID + "_" + file.originalname,
+        Key: randomUUID() + "_" + file.originalname,
         Body: file.buffer,
         ContentType: file.mimetype
     }

@@ -8,31 +8,31 @@ const userSchema = new Schema<User>({
     name: {
         type: String,
         trim: true,
-        match: [/^[\p{L}\p{M}\p{Zs}'\-]+$/u, "Please, insert valid characters for your name."]
+        match: [new RegExp(process.env.NAME_REGEX!), "Please, insert valid characters for your name."]
     },
     surname: {
         type: String,
         trim: true,
-        match: [/^[\p{L}\p{M}\p{Zs}'\-]+$/u, "Please, insert valid characters for your surname."]
+        match: [new RegExp(process.env.NAME_REGEX!), "Please, insert valid characters for your surname."]
     },
     email: {
         type: String,
         trim: true,
         required: [true, "Email is required."],
         unique: true,
-        match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "The given email is not valid."]
+        match: [new RegExp(process.env.EMAIL_REGEX!), "The given email is not valid."]
     },
     username: {
         type: String,
         required: [true, "The username is required."],
         unique: true,
         trim: true,
-        match: [/^[a-zA-Z0-9_]{3,16}$/, "The username is not valid."]
+        match: [new RegExp(process.env.USERNAME_REGEX!), "The username is not valid."]
     },
     password: {
         type: String,
         required: [true, "Password is required."],
-        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "Password must be at least 8 characters long, include a number, a special character, an uppercase character and a lowercase character."]
+        match: [new RegExp(process.env.PSW_REGEX!), "Password must be at least 8 characters long, include a number, a special character, an uppercase character and a lowercase character."]
     },
     role: {
         type: String,
