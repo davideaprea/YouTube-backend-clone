@@ -13,3 +13,5 @@ videoRouter.route("/").post(
     ]),
     createVideo
 );
+
+videoRouter.route("/:id").delete(verifyJwt);

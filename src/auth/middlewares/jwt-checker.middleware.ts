@@ -13,9 +13,17 @@ export const verifyJwt: RequestHandler = async (req, res, next): Promise<void> =
 
     const jwt: JwtPayload | undefined = decodeJwt(token);
 
-    if (!jwt || !(await UserModel.find({ email: jwt.email }))) {
+    if (!jwt) {
         return next(new HttpError(401));
     }
+
+    const user = await UserModel.findOne({ email: jwt.email });
+
+    if (!user) {
+        return next(new HttpError(401));
+    }
+
+    req.user = user;
 
     next();
 }
