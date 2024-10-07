@@ -43,8 +43,8 @@ const videoSchema = new Schema<Video>({
             min: 0
         },
         title: {
-            type: [String, "Chapter's title is required."],
-            required: true,
+            type: String,
+            required: [String, "Chapter's title is required."],
             maxlength: [100, "Chapter titles can't be above 100 characters."]
         }
     }]
@@ -57,8 +57,8 @@ videoSchema.pre("save", function (next) {
 
     chapters.sort((a, b) => a.from - b.from);
 
-    for(let i = 0; i < chapters.length - 1; i++) {
-        if(chapters[i - 1].from - chapters[i].from < 10) {
+    for(let i = 1; i < chapters.length; i++) {
+        if(chapters[i].from - chapters[i - 1].from < 10) {
             return next(new HttpError(400, "Every chapter must be at least 10 seconds long."));
         }
     }

@@ -21,7 +21,7 @@ export const createVideo: RequestHandler = async (req, res, next): Promise<void>
         dto.source = sourceName!;
         dto.thumbnail = thumbnailName;
 
-        const video = VideoModel.create(dto);
+        const video = await VideoModel.create(dto);
         res.status(201).json(video);
     } catch (e) {
         next(e);
