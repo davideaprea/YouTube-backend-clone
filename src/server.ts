@@ -1,5 +1,6 @@
 import { connect } from "mongoose";
 import { app } from ".";
+import { createFakeVideos } from "./core/utilities/create-fake-video";
 
 connect(process.env.LOCAL_DB_URL!)
 .then(() => console.log("Successully connected to the database."))
@@ -11,3 +12,5 @@ app.listen(
     port,
     () => console.log(`Server running at http://localhost:${port}.`)
 );
+
+createFakeVideos(200);
