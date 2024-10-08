@@ -19,7 +19,7 @@ export const createVideo: CustomReqHandler = async (req, res, next): Promise<voi
 
         if (thumbnailFile) thumbnailName = await saveFile(thumbnailFile, "image");
 
-        dto.creatorId = req.user!._id;
+        dto.creator = req.user!._id;
         dto.source = sourceName!;
         dto.thumbnail = thumbnailName;
 
@@ -38,7 +38,7 @@ export const deleteVideo: CustomReqHandler = async (req, res, next): Promise<voi
         videoId,
         {
             _id: 1,
-            creatorId: 1,
+            creator: 1,
             source: 1
         }
     ).exec();
@@ -47,7 +47,7 @@ export const deleteVideo: CustomReqHandler = async (req, res, next): Promise<voi
         return next(new HttpError(404));
     }
 
-    if (!video.creatorId.equals(req.user!._id)) {
+    if (!video.creator.equals(req.user!._id)) {
         return next(new HttpError(403, "You're not the creator of this video."));
     }
 
@@ -71,7 +71,7 @@ export const editVideo: CustomReqHandler = async (req, res, next): Promise<void>
 
     /*TODO: Find a way to remove this duplicate code to
     check if the user is actually the owner of this resource.*/
-    if (!video.creatorId.equals(req.user!._id)) {
+    if (!video.creator.equals(req.user!._id)) {
         return next(new HttpError(403, "You're not the creator of this video."));
     }
 
@@ -104,13 +104,13 @@ export const searchVideos: CustomReqHandler = async (req, res, next): Promise<vo
     const results = await VideoModel
         .find(query, {
             _id: 1,
-            creatorId: 1,
+            creator: 1,
             createdAt: 1,
             thumbnail: 1,
             views: 1,
             title: 1
         })
-        .populate("creatorId", "name surname profilePic")
+        .populate("creator", "name surname profilePic")
         .sort({ _id: 1 })
         .limit(limit);
 
