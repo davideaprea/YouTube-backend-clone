@@ -16,6 +16,6 @@ videoRouter.route("/").post(
 
 videoRouter.route("/:id")
     .delete(verifyJwt, deleteVideo)
-    .put(verifyJwt, editVideo);
+    .patch(verifyJwt, editVideo);
 
 videoRouter.route("/:title/:limit/:lastId?").get(searchVideos);

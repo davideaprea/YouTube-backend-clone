@@ -8,4 +8,4 @@ authRouter.route("/register").post(register);
 
 authRouter.route("/login").post(login);
 
-authRouter.route("/change-psw").post(verifyJwt, changePsw);
+authRouter.route("/change-psw").patch(verifyJwt, changePsw);
