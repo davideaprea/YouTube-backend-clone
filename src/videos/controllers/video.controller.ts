@@ -1,4 +1,3 @@
-import { RequestHandler } from "express"
 import { VideoDto } from "../types/dtos/video-dto.type"
 import { HttpError } from "../../core/utilities/http-error.class";
 import { deleteFile, saveFile } from "../../core/services/media.service";
@@ -6,7 +5,7 @@ import { VideoModel } from "../models/video.model";
 import { MulterFileMap } from "../../core/types/multer-file-map.type";
 import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
 
-export const createVideo: RequestHandler = async (req, res, next): Promise<void> => {
+export const createVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     const dto: VideoDto = req.body;
     const files = req.files as MulterFileMap | undefined;
     const sourceFile = files?.source?.[0];
@@ -19,6 +18,7 @@ export const createVideo: RequestHandler = async (req, res, next): Promise<void>
 
         if (thumbnailFile) thumbnailName = await saveFile(thumbnailFile, "image");
 
+        dto.creatorId = req.user!._id;
         dto.source = sourceName!;
         dto.thumbnail = thumbnailName;
 
