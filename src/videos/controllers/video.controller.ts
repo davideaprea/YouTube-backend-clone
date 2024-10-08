@@ -90,7 +90,7 @@ export const editVideo: CustomReqHandler = async (req, res, next): Promise<void>
 
 export const searchVideos: CustomReqHandler = async (req, res, next): Promise<void> => {
     const lastId: string | undefined = req.params.lastId;
-    const title: string | undefined = req.params.title;
+    const title: string | undefined = req.params.title.replaceAll("+", " ");
     const query: Record<string, any> = { $text: { $search: title } };
 
     if (lastId) {
