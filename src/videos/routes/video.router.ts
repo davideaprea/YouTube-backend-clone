@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyJwt } from "../../auth/middlewares/jwt-checker.middleware";
 import { multerConfig } from "../../core/constants/multer-config";
-import { createVideo } from "../controllers/video.controller";
+import { createVideo, deleteVideo } from "../controllers/video.controller";
 
 export const videoRouter: Router = Router();
 
@@ -14,4 +14,4 @@ videoRouter.route("/").post(
     createVideo
 );
 
-videoRouter.route("/:id").delete(verifyJwt);
+videoRouter.route("/:id").delete(verifyJwt, deleteVideo);

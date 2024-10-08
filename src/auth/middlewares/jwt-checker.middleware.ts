@@ -1,10 +1,10 @@
-import { RequestHandler } from "express";
 import { decodeJwt, getJwtFromReq } from "../services/jwt-manager.service";
 import { HttpError } from "../../core/utilities/http-error.class";
 import { UserModel } from "../models/user.model";
 import { JwtPayload } from "jsonwebtoken";
+import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
 
-export const verifyJwt: RequestHandler = async (req, res, next): Promise<void> => {
+export const verifyJwt: CustomReqHandler = async (req, res, next): Promise<void> => {
     const token: string | undefined = getJwtFromReq(req);
 
     if (!token) {
