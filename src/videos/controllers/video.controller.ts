@@ -110,6 +110,7 @@ export const searchVideos: CustomReqHandler = async (req, res, next): Promise<vo
             views: 1,
             title: 1
         })
+        .populate("creatorId", "name surname profilePic")
         .sort({ _id: 1 })
         .limit(limit);
 
