@@ -24,6 +24,8 @@ export const createVideo: CustomReqHandler = async (req, res, next): Promise<voi
 
         const video = await VideoModel.create(dto);
         res.status(201).json(video);
+        /*TODO: Implement document and file deletion
+        if creation fails.*/
     } catch (e) {
         next(e);
     }
