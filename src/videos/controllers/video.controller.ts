@@ -4,6 +4,7 @@ import { deleteFile, saveFile } from "../../core/services/media.service";
 import { VideoModel } from "../models/video.model";
 import { MulterFileMap } from "../../core/types/multer-file-map.type";
 import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
+import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 
 export const createVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     const dto: VideoDto = req.body;
@@ -53,6 +54,34 @@ export const deleteVideo: CustomReqHandler = async (req, res, next): Promise<voi
     try {
         await VideoModel.deleteOne({ _id: videoId });
         await deleteFile(video.source);
+        res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
+}
+
+export const editVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
+    const videoId: string = req.params.id;
+    const body: EditVideoDto = req.body;
+    const video = await VideoModel.findById(videoId).exec();
+
+    if (!video) {
+        return next(new HttpError(404));
+    }
+
+    /*TODO: Find a way to remove this duplicate code to
+    check if the user is actually the owner of this resource.*/
+    if (!video.creatorId.equals(req.user!._id)) {
+        return next(new HttpError(403, "You're not the creator of this video."));
+    }
+
+    video.allowComments = body.allowComments ?? video.allowComments;
+    video.chapters = body.chapters ?? video.chapters;
+    video.title = body.title ?? video.title;
+    video.description = body.description ?? video.description;
+
+    try {
+        await video.save();
         res.status(204).send();
     } catch (e) {
         next(e);
