@@ -116,3 +116,22 @@ export const searchVideos: CustomReqHandler = async (req, res, next): Promise<vo
 
     res.status(200).json(results);
 }
+
+export const addView: CustomReqHandler = async (req, res, next): Promise<void> => {
+    const id: string = req.params.id;
+
+    const video = await VideoModel.findById(id, { views: 1 }).exec();
+
+    if(!video) {
+        return next(new HttpError(404));
+    }
+
+    video.views += 1;
+
+    try {
+        await video.save();
+        res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
+}
