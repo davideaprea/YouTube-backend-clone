@@ -7,7 +7,7 @@ export const createFakeVideo = (): VideoDto => {
     return <VideoDto>{
         source: faker.internet.url(),
         thumbnail: faker.internet.url(),
-        title: faker.string.alphanumeric({ length: { min: 10, max: 100 } }),
+        title: faker.commerce.productName(),
         description: faker.string.alphanumeric({ length: { min: 10, max: 5000 } }),
         creatorId: new Types.ObjectId("6700ff3f3360a283057cbefa")
     }

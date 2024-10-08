@@ -87,3 +87,31 @@ export const editVideo: CustomReqHandler = async (req, res, next): Promise<void>
         next(e);
     }
 }
+
+export const searchVideos: CustomReqHandler = async (req, res, next): Promise<void> => {
+    const lastId: string | undefined = req.params.lastId;
+    const title: string | undefined = req.params.title;
+    const query: Record<string, any> = { $text: { $search: title } };
+
+    if (lastId) {
+        query._id = { $gt: lastId };
+    }
+
+    let limit: number | undefined = Number(req.params.limit) || 10;
+
+    if (limit > 50) limit = 10;
+
+    const results = await VideoModel
+        .find(query, {
+            _id: 1,
+            creatorId: 1,
+            createdAt: 1,
+            thumbnail: 1,
+            views: 1,
+            title: 1
+        })
+        .sort({ _id: 1 })
+        .limit(limit);
+
+    res.status(200).json(results);
+}

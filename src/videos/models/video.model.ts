@@ -53,17 +53,19 @@ const videoSchema = new Schema<Video>({
 videoSchema.pre("save", function (next) {
     const chapters = this.chapters;
 
-    if(!chapters || chapters.length < 1) return next();
+    if (!chapters || chapters.length < 1) return next();
 
     chapters.sort((a, b) => a.from - b.from);
 
-    for(let i = 1; i < chapters.length; i++) {
-        if(chapters[i].from - chapters[i - 1].from < 10) {
+    for (let i = 1; i < chapters.length; i++) {
+        if (chapters[i].from - chapters[i - 1].from < 10) {
             return next(new HttpError(400, "Every chapter must be at least 10 seconds long."));
         }
     }
 
     next();
 });
+
+videoSchema.index({ title: "text" });
 
 export const VideoModel = model(VideoSchemaNames.VIDEO, videoSchema);
