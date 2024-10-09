@@ -15,4 +15,4 @@ const likeDislike = new Schema<VideoLikedOrDisliked>({
 
 likeDislike.index({ postId: 1, userId: 1 }, { unique: true });
 
-export const PostLikeDislikeModel = model(VideoSchemaNames.POST_LIKE_DISLIKE, likeDislike);
+export const VideoLikeDislikeModel = model(VideoSchemaNames.POST_LIKE_DISLIKE, likeDislike);

@@ -5,6 +5,10 @@ import { VideoModel } from "../models/video.model";
 import { MulterFileMap } from "../../core/types/multer-file-map.type";
 import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
 import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
+import { User } from "../../auth/types/user.type";
+import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
+import { InteractionType } from "../types/interaction-type.enum";
+import { startSession } from "mongoose";
 
 export const createVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     const dto: VideoDto = req.body;
@@ -122,14 +126,75 @@ export const addView: CustomReqHandler = async (req, res, next): Promise<void> =
 
     const video = await VideoModel.findById(id, { views: 1 }).exec();
 
-    if(!video) {
+    if (!video) {
         return next(new HttpError(404));
     }
 
-    video.views += 1;
+    video.views++;
 
     try {
         await video.save();
+        res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
+}
+
+export const addLikeDislike: CustomReqHandler = async (req, res, next): Promise<void> => {
+    const action: string = req.params.interaction;
+
+    if (!(action in InteractionType)) {
+        return next(new HttpError(400, `Please, send a correct interaction between ${InteractionType.LIKE} or ${InteractionType.DISLIKE}`));
+    }
+
+    const liked: boolean = action == InteractionType.LIKE ? true : false;
+    const id: string = req.params.id;
+    const user: User = req.user!;
+    const video = await VideoModel
+        .findById(id, { likes: 1, dislikes: 1 })
+        .exec();
+
+    if (!video) {
+        return next(new HttpError(404, "Video not found."));
+    }
+
+    const likeDislike = await VideoLikeDislikeModel
+        .findOne(
+            { userId: user._id, videoId: id },
+            { liked: 1 }
+        );
+
+    try {
+        if (likeDislike) {
+            if (likeDislike.liked != liked) {
+                likeDislike.liked = liked;
+
+                if (!liked) {
+                    video.dislikes++;
+                    video.likes--;
+                }
+                else {
+                    video.dislikes--;
+                    video.likes++;
+                }
+
+                await video.save();
+                await likeDislike.save();
+            }
+        }
+        else {
+            await VideoLikeDislikeModel.create({
+                liked,
+                userId: user._id,
+                videoId: id
+            });
+
+            if (liked) video.likes++;
+            else video.dislikes--;
+
+            await video.save();
+        }
+
         res.status(204).send();
     } catch (e) {
         next(e);
