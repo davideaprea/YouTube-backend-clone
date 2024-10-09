@@ -56,6 +56,7 @@ export const deleteVideo: CustomReqHandler = async (req, res, next): Promise<voi
 
     try {
         await VideoModel.deleteOne({ _id: videoId });
+        await VideoLikeDislikeModel.deleteMany({ videoId });
         await deleteFile(video.source);
         res.status(204).send();
     } catch (e) {
