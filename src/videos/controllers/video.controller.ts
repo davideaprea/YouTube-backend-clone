@@ -8,7 +8,6 @@ import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 import { User } from "../../auth/types/user.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { InteractionType } from "../types/interaction-type.enum";
-import { startSession } from "mongoose";
 
 export const createVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     const dto: VideoDto = req.body;
@@ -196,6 +195,38 @@ export const addLikeDislike: CustomReqHandler = async (req, res, next): Promise<
         }
 
         res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
+}
+
+export const removeLikeDislike: CustomReqHandler = async (req, res, next): Promise<void> => {
+    const id: string = req.params.id;
+
+    const video = await VideoModel.findById(id, { likes: 1, dislikes: 1 }).exec();
+
+    if (!video) {
+        return next(new HttpError(404, "Video not found."));
+    }
+
+    const likeDislike = await VideoLikeDislikeModel
+        .findOne(
+            { userId: req.user!._id, videoId: id },
+            { liked: 1 }
+        );
+
+    if (!likeDislike) {
+        return next(new HttpError(404, "Interaction not found."));
+    }
+
+    if (likeDislike.liked) video.likes--;
+    else video.dislikes--;
+
+    try {
+        await video.save();
+        await VideoLikeDislikeModel.deleteOne({ _id: likeDislike._id });
+    
+        res.status(204).send();      
     } catch (e) {
         next(e);
     }
