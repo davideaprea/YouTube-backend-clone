@@ -1,13 +1,12 @@
 import { VideoDto } from "../types/dtos/video-dto.type"
 import { HttpError } from "../../core/utilities/http-error.class";
-import { deleteFile } from "../../core/services/media.service";
 import { VideoModel } from "../models/video.model";
 import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
 import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 import { User } from "../../auth/types/user.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { InteractionType } from "../types/interaction-type.enum";
-import { createVideo } from "../services/video.service";
+import { createVideo, deleteVideo, findVideoById } from "../services/video.service";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
@@ -22,29 +21,23 @@ export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promi
     }
 }
 
-export const deleteVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
-    const videoId: string = req.params.id;
-    const video = await VideoModel.findById(
-        videoId,
-        {
-            _id: 1,
-            creator: 1,
-            source: 1
-        }
-    ).exec();
-
-    if (!video) {
-        return next(new HttpError(404));
-    }
-
-    if (!video.creator.equals(req.user!._id)) {
-        return next(new HttpError(403, "You're not the creator of this video."));
-    }
-
+export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
-        await VideoModel.deleteOne({ _id: videoId });
-        await VideoLikeDislikeModel.deleteMany({ videoId });
-        await deleteFile(video.source);
+        const videoId: string = req.params.id;
+        const video = await findVideoById(
+            videoId,
+            {
+                _id: 1,
+                creator: 1,
+                source: 1
+            }
+        );
+
+        if (!video.creator.equals(req.user!._id)) {
+            return next(new HttpError(403, "You're not the creator of this video."));
+        }
+
+        await deleteVideo(video);
         res.status(204).send();
     } catch (e) {
         next(e);
@@ -213,8 +206,8 @@ export const removeLikeDislike: CustomReqHandler = async (req, res, next): Promi
     try {
         await video.save();
         await VideoLikeDislikeModel.deleteOne({ _id: likeDislike._id });
-    
-        res.status(204).send();      
+
+        res.status(204).send();
     } catch (e) {
         next(e);
     }
