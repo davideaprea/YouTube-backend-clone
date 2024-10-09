@@ -1,35 +1,22 @@
 import { VideoDto } from "../types/dtos/video-dto.type"
 import { HttpError } from "../../core/utilities/http-error.class";
-import { deleteFile, saveFile } from "../../core/services/media.service";
+import { deleteFile } from "../../core/services/media.service";
 import { VideoModel } from "../models/video.model";
-import { MulterFileMap } from "../../core/types/multer-file-map.type";
 import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
 import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 import { User } from "../../auth/types/user.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { InteractionType } from "../types/interaction-type.enum";
+import { createVideo } from "../services/video.service";
 
-export const createVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
-    const dto: VideoDto = req.body;
-    const files = req.files as MulterFileMap | undefined;
-    const sourceFile = files?.source?.[0];
-    const thumbnailFile = files?.thumbnail?.[0];
-
-    if (!sourceFile) return next(new HttpError(400, "Missing video source."));
-
+export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
-        let sourceName = await saveFile(sourceFile, "video"), thumbnailName;
-
-        if (thumbnailFile) thumbnailName = await saveFile(thumbnailFile, "image");
+        const dto: VideoDto = req.body;
 
         dto.creator = req.user!._id;
-        dto.source = sourceName!;
-        dto.thumbnail = thumbnailName;
 
-        const video = await VideoModel.create(dto);
+        const video = await createVideo(dto);
         res.status(201).json(video);
-        /*TODO: Implement document and file deletion
-        if creation fails.*/
     } catch (e) {
         next(e);
     }

@@ -27,7 +27,7 @@ export const saveFile = async (file: Express.Multer.File, checkMime?: string): P
 
     const command: PutObjectCommand = new PutObjectCommand(sourceCommand);
 
-    await s3Client.send(command);
+    //await s3Client.send(command);
     return sourceCommand.Key;
 }
 

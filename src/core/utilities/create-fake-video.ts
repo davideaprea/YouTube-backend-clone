@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker"
-import { VideoDto } from "../../videos/types/dtos/video-dto.type"
 import { Types } from "mongoose"
 import { VideoModel } from "../../videos/models/video.model"
+import { Video } from "../../videos/types/video.type"
 
-export const createFakeVideo = (): VideoDto => {
-    return <VideoDto>{
+export const createFakeVideo = (): Video => {
+    return <Video>{
         source: faker.internet.url(),
         thumbnail: faker.internet.url(),
         title: faker.commerce.productName(),

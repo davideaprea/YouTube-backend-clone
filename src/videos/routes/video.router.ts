@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { verifyJwt } from "../../auth/middlewares/jwt-checker.middleware";
 import { multerConfig } from "../../core/constants/multer-config";
-import { addLikeDislike, addView, createVideo, deleteVideo, editVideo, removeLikeDislike, searchVideos } from "../controllers/video.controller";
+import { addLikeDislike, addView, handleCreateVideo, deleteVideo, editVideo, removeLikeDislike, searchVideos } from "../controllers/video.controller";
+import { addFilesToBody } from "../../core/middlewares/add-files-to-body.middleware";
 
 export const videoRouter: Router = Router();
 
@@ -11,7 +12,8 @@ videoRouter.route("/").post(
         { name: "source", maxCount: 1 },
         { name: "thumbnail", maxCount: 1 }
     ]),
-    createVideo
+    addFilesToBody,
+    handleCreateVideo
 );
 
 videoRouter.route("/:id")
