@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { RegisterDto } from "./register-dto.type"
+import { RegisterDto } from "./register-dto.type.js";
 
 export type User = RegisterDto & {
     readonly _id: Types.ObjectId,

@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { Video } from "../video.type";
+import { Video } from "../video.type.js";
 
 export type VideoDto = Pick<Video, "title" | "description" | "allowComments" | "chapters"> & {
     creator: Types.ObjectId,

@@ -1,11 +1,12 @@
+import { compareSync } from "bcrypt";
 import { RequestHandler } from "express";
-import { UserModel } from "../models/user.model";
-import { decodeJwt, generateAuthJwt, getJwtFromReq } from "../services/jwt-manager.service";
-import bcrypt, { compareSync } from 'bcrypt';
-import { HttpError } from "../../core/utilities/http-error.class";
-import { ChangePswDto } from "../types/change-psw-dto.type";
 import { JwtPayload } from "jsonwebtoken";
-import { User } from "../types/user.type";
+import { HttpError } from "../../core/utilities/http-error.class.js";
+import { UserModel } from "../models/user.model.js";
+import { generateAuthJwt, decodeJwt, getJwtFromReq } from "../services/jwt-manager.service.js";
+import { ChangePswDto } from "../types/change-psw-dto.type.js";
+import { User } from "../types/user.type.js";
+
 
 export const register: RequestHandler = async (req, res, next): Promise<void> => {
     const { email } = req.body;
@@ -38,7 +39,7 @@ export const login: RequestHandler = async (req, res, next): Promise<void> => {
     const credentials = req.body;
     const user = await UserModel.findOne({ email: credentials?.email });
 
-    if (!user || !bcrypt.compareSync(credentials.password, user.password)) {
+    if (!user || !compareSync(credentials.password, user.password)) {
         return next(new HttpError(400, "Incorrect email or password."));
     }
 

@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { User } from "../types/user.type";
+import { User } from "../types/user.type.js";
 
 export const generateBasicJwt = (claims: Record<string, any>): string => {
     return sign(

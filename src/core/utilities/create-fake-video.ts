@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { Types } from "mongoose"
-import { VideoModel } from "../../videos/models/video.model"
-import { Video } from "../../videos/types/video.type"
+import { VideoModel } from "../../videos/models/video.model.js"
+import { Video } from "../../videos/types/video.type.js"
 
 export const createFakeVideo = (): Video => {
     return <Video>{

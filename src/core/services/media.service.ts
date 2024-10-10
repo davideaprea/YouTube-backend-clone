@@ -1,6 +1,6 @@
 import { DeleteObjectCommand, DeleteObjectCommandInput, PutObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
-import { HttpError } from "../utilities/http-error.class";
+import { HttpError } from "../utilities/http-error.class.js";
 
 const bucket: string = process.env.S3_BUCKET_NAME!
 

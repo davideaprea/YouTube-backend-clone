@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import { JwtPayload } from "jsonwebtoken";
-import { decodeJwt, getJwtFromReq } from "../services/jwt-manager.service";
-import { Roles } from "../types/roles.enum";
-import { HttpError } from "../../core/utilities/http-error.class";
+import { HttpError } from "../../core/utilities/http-error.class.js";
+import { decodeJwt, getJwtFromReq } from "../services/jwt-manager.service.js";
+import { Roles } from "../types/roles.enum.js";
 
 export const isAuhorized = (role: Roles) => {
     const reqHandler: RequestHandler = (req, res, next): void => {

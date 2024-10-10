@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
-import { Comment } from "../types/comment.type";
-import { likesDislikesProperty } from "../constants/likes-dislikes.property";
-import { videoIdProperty, timeProperty, userIdProperty } from "../constants/video-interaction.property";
-import { VideoSchemaNames } from "../types/video-schema-names.enum";
-import { AuthSchemaNames } from "../../auth/types/auth-schema-names.enum";
+import { AuthSchemaNames } from "../../auth/types/auth-schema-names.enum.js";
+import { likesDislikesProperty } from "../constants/likes-dislikes.property.js";
+import { userIdProperty, videoIdProperty, timeProperty } from "../constants/video-interaction.property.js";
+import { VideoSchemaNames } from "../types/video-schema-names.enum.js";
+import { Comment } from "../types/comment.type.js";
 
 const commentSchema = new Schema<Comment>({
     userId: userIdProperty,

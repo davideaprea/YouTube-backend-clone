@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { verifyJwt } from "../../auth/middlewares/jwt-checker.middleware";
-import { multerConfig } from "../../core/constants/multer-config";
-import { handleAddInteraction, handleAddView, handleCreateVideo, handleDeleteVideo, handleEditVideo, handleRemoveInteraction, handleSearchVideos, handleEditInteraction } from "../controllers/video.controller";
-import { addFilesToBody } from "../../core/middlewares/add-files-to-body.middleware";
+import { verifyJwt } from "../../auth/middlewares/jwt-checker.middleware.js";
+import { multerConfig } from "../../core/constants/multer-config.js";
+import { addFilesToBody } from "../../core/middlewares/add-files-to-body.middleware.js";
+import { handleCreateVideo, handleDeleteVideo, handleEditVideo, handleAddView, handleAddInteraction, handleRemoveInteraction, handleEditInteraction, handleSearchVideos } from "../controllers/video.controller.js";
 
 export const videoRouter: Router = Router();
 

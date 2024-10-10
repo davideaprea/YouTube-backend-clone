@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { changePsw, login, register } from "../controllers/auth.controller";
-import { verifyJwt } from "../middlewares/jwt-checker.middleware";
+import { login, changePsw, register } from "../controllers/auth.controller.js";
+import { verifyJwt } from "../middlewares/jwt-checker.middleware.js";
 
 export const authRouter: Router = Router();
 

@@ -1,6 +1,6 @@
 import { connect } from "mongoose";
-import { app } from ".";
-import { createFakeVideos } from "./core/utilities/create-fake-video";
+import { createFakeVideos } from "./core/utilities/create-fake-video.js";
+import { app } from "./index.js";
 
 connect(process.env.LOCAL_DB_URL!)
 .then(() => console.log("Successully connected to the database."))

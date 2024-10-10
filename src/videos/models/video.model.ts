@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
-import { Video } from "../types/video.type";
-import { VideoSchemaNames } from "../types/video-schema-names.enum";
-import { likesDislikesProperty } from "../constants/likes-dislikes.property";
-import { timeProperty, userIdProperty } from "../constants/video-interaction.property";
-import { HttpError } from "../../core/utilities/http-error.class";
+import { HttpError } from "../../core/utilities/http-error.class.js";
+import { likesDislikesProperty } from "../constants/likes-dislikes.property.js";
+import { userIdProperty, timeProperty } from "../constants/video-interaction.property.js";
+import { VideoSchemaNames } from "../types/video-schema-names.enum.js";
+import { Video } from "../types/video.type.js";
 
 const videoSchema = new Schema<Video>({
     creator: userIdProperty,

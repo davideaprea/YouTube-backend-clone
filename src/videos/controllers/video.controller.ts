@@ -1,10 +1,10 @@
-import { VideoDto } from "../types/dtos/video-dto.type"
-import { HttpError } from "../../core/utilities/http-error.class";
-import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
-import { User } from "../../auth/types/user.type";
-import { InteractionType } from "../types/interaction-type.enum";
-import { addView, createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
-import { addInteraction, deleteInteraction, toggleInteraction } from "../services/interaction.service";
+import { User } from "../../auth/types/user.type.js";
+import { CustomReqHandler } from "../../core/types/custom-req-handler.interface.js";
+import { HttpError } from "../../core/utilities/http-error.class.js";
+import { addInteraction, toggleInteraction, deleteInteraction } from "../services/interaction.service.js";
+import { createVideo, findVideoById, deleteVideo, editVideo, getVideoPage, addView } from "../services/video.service.js";
+import { VideoDto } from "../types/dtos/video-dto.type.js";
+import { InteractionType } from "../types/interaction-type.enum.js";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {

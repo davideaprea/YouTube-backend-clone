@@ -1,6 +1,6 @@
-import { HttpError } from "../../core/utilities/http-error.class";
-import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
-import { findVideoById } from "./video.service";
+import { HttpError } from "../../core/utilities/http-error.class.js";
+import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model.js";
+import { findVideoById } from "./video.service.js";
 
 export const findInteraction = async (userId: string, videoId: string) => {
     const interaction = await VideoLikeDislikeModel.findOne({ userId, videoId });

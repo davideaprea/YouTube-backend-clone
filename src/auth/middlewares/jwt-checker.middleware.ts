@@ -1,8 +1,9 @@
-import { decodeJwt, getJwtFromReq } from "../services/jwt-manager.service";
-import { HttpError } from "../../core/utilities/http-error.class";
-import { UserModel } from "../models/user.model";
 import { JwtPayload } from "jsonwebtoken";
-import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
+import { CustomReqHandler } from "../../core/types/custom-req-handler.interface.js";
+import { HttpError } from "../../core/utilities/http-error.class.js";
+import { UserModel } from "../models/user.model.js";
+import { getJwtFromReq, decodeJwt } from "../services/jwt-manager.service.js";
+
 
 export const verifyJwt: CustomReqHandler = async (req, res, next): Promise<void> => {
     const token: string | undefined = getJwtFromReq(req);

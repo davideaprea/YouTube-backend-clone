@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
-import { AuthSchemaNames } from "../../auth/types/auth-schema-names.enum";
-import { VideoSchemaNames } from "../types/video-schema-names.enum";
+import { AuthSchemaNames } from "../../auth/types/auth-schema-names.enum.js";
+import { VideoSchemaNames } from "../types/video-schema-names.enum.js";
 
 export const videoIdProperty = {
     required: true,

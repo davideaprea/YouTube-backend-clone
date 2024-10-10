@@ -1,4 +1,4 @@
-import { HttpError } from "../utilities/http-error.class";
+import { HttpError } from "../utilities/http-error.class.js";
 import mongoose from "mongoose";
 
 export const globalErrorHandler = (err: unknown, req: any, res: any, next: any): void => {

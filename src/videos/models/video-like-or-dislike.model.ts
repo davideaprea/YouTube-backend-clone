@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import { VideoSchemaNames } from "../types/video-schema-names.enum";
-import { userIdProperty, videoIdProperty, timeProperty } from "../constants/video-interaction.property";
-import { VideoLikedOrDisliked } from "../types/video-liked-or-disliked.type";
+import { userIdProperty, videoIdProperty, timeProperty } from "../constants/video-interaction.property.js";
+import { VideoLikedOrDisliked } from "../types/video-liked-or-disliked.type.js";
+import { VideoSchemaNames } from "../types/video-schema-names.enum.js";
 
 const likeDislike = new Schema<VideoLikedOrDisliked>({
     userId: userIdProperty,

@@ -1,4 +1,4 @@
-import { Roles } from "./roles.enum"
+import { Roles } from "./roles.enum.js"
 
 export type RegisterDto = {
     name?: string,

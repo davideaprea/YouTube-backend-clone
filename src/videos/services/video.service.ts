@@ -1,11 +1,11 @@
 import { ProjectionType } from "mongoose";
-import { deleteFile, saveFile } from "../../core/services/media.service";
-import { HttpError } from "../../core/utilities/http-error.class";
-import { VideoModel } from "../models/video.model";
-import { VideoDto } from "../types/dtos/video-dto.type";
-import { Video } from "../types/video.type";
-import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
-import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
+import { saveFile, deleteFile } from "../../core/services/media.service.js";
+import { HttpError } from "../../core/utilities/http-error.class.js";
+import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model.js";
+import { VideoModel } from "../models/video.model.js";
+import { EditVideoDto } from "../types/dtos/edit-video-dto.type.js";
+import { VideoDto } from "../types/dtos/video-dto.type.js";
+import { Video } from "../types/video.type.js";
 
 export const createVideo = async (dto: VideoDto) => {
     /*TODO: Implement document and file deletion if creation fails.*/

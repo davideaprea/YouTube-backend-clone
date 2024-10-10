@@ -1,6 +1,6 @@
 import { Types } from "mongoose"
-import { Likeable } from "./likeable.type"
-import { Dislikeable } from "./dislikeable.type"
+import { Dislikeable } from "./dislikeable.type.js"
+import { Likeable } from "./likeable.type.js"
 
 export type Video = Likeable & Dislikeable & {
     readonly _id: Types.ObjectId,

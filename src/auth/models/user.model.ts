@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
 import bcrypt from 'bcrypt';
-import { Roles } from "../types/roles.enum";
-import { User } from "../types/user.type";
-import { AuthSchemaNames } from "../types/auth-schema-names.enum";
+import { AuthSchemaNames } from "../types/auth-schema-names.enum.js";
+import { Roles } from "../types/roles.enum.js";
+import { User } from "../types/user.type.js";
 
 const userSchema = new Schema<User>({
     name: {

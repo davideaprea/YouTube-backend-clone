@@ -2,11 +2,11 @@ import { config } from 'dotenv';
 config({ path: "./.env" });
 
 import express, { Express, json } from 'express';
-import { authRouter } from './auth/routes/auth.router';
-import { globalErrorHandler } from './core/controllers/error.controller';
-import { HttpError } from './core/utilities/http-error.class';
 import cors from 'cors';
-import { videoRouter } from './videos/routes/video.router';
+import { authRouter } from './auth/routes/auth.router.js';
+import { globalErrorHandler } from './core/controllers/error.controller.js';
+import { HttpError } from './core/utilities/http-error.class.js';
+import { videoRouter } from './videos/routes/video.router.js';
 
 
 export const app: Express = express();
