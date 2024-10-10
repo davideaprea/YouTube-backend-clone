@@ -50,3 +50,23 @@ export const editVideo = async (id: string, dto: EditVideoDto) => {
 
     await video.save();
 }
+
+export const getVideoPage = async (title: string, limit: number = 10, lastId?: string) => {
+    const query: Record<string, any> = { $text: { $search: title } };
+
+    if (lastId) query._id = { $gt: lastId };
+    if (limit > 50) limit = 10;
+
+    return await VideoModel
+        .find(query, {
+            _id: 1,
+            creator: 1,
+            createdAt: 1,
+            thumbnail: 1,
+            views: 1,
+            title: 1
+        })
+        .populate("creator", "name surname profilePic")
+        .sort({ _id: 1 })
+        .limit(limit);
+}

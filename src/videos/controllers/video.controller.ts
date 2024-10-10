@@ -6,7 +6,7 @@ import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 import { User } from "../../auth/types/user.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { InteractionType } from "../types/interaction-type.enum";
-import { createVideo, deleteVideo, editVideo, findVideoById } from "../services/video.service";
+import { createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
@@ -53,31 +53,12 @@ export const handleEditVideo: CustomReqHandler = async (req, res, next): Promise
     }
 }
 
-export const searchVideos: CustomReqHandler = async (req, res, next): Promise<void> => {
+export const handleSearchVideos: CustomReqHandler = async (req, res, next): Promise<void> => {
     const lastId: string | undefined = req.params.lastId;
-    const title: string | undefined = req.params.title.replaceAll("+", " ");
-    const query: Record<string, any> = { $text: { $search: title } };
-
-    if (lastId) {
-        query._id = { $gt: lastId };
-    }
-
-    let limit: number | undefined = Number(req.params.limit) || 10;
-
-    if (limit > 50) limit = 10;
-
-    const results = await VideoModel
-        .find(query, {
-            _id: 1,
-            creator: 1,
-            createdAt: 1,
-            thumbnail: 1,
-            views: 1,
-            title: 1
-        })
-        .populate("creator", "name surname profilePic")
-        .sort({ _id: 1 })
-        .limit(limit);
+    const title: string = req.params.title.replaceAll("+", " ");
+    const limit: number = Number(req.params.limit);
+    
+    const results = await getVideoPage(title, limit, lastId);
 
     res.status(200).json(results);
 }

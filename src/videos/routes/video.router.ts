@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyJwt } from "../../auth/middlewares/jwt-checker.middleware";
 import { multerConfig } from "../../core/constants/multer-config";
-import { addLikeDislike, addView, handleCreateVideo, handleDeleteVideo, handleEditVideo, removeLikeDislike, searchVideos } from "../controllers/video.controller";
+import { addLikeDislike, addView, handleCreateVideo, handleDeleteVideo, handleEditVideo, removeLikeDislike, handleSearchVideos } from "../controllers/video.controller";
 import { addFilesToBody } from "../../core/middlewares/add-files-to-body.middleware";
 
 export const videoRouter: Router = Router();
@@ -26,4 +26,4 @@ videoRouter.route("/:id/like-dislike/:interaction").patch(verifyJwt, addLikeDisl
 
 videoRouter.route("/:id/like-dislike").delete(verifyJwt, removeLikeDislike);
 
-videoRouter.route("/:title/:limit/:lastId?").get(searchVideos);
+videoRouter.route("/:title/:limit/:lastId?").get(handleSearchVideos);
