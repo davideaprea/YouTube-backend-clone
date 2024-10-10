@@ -43,11 +43,10 @@ export const deleteVideo = async (video: Video): Promise<void> => {
 export const editVideo = async (id: string, dto: EditVideoDto) => {
     const video = await findVideoById(id);
 
-    for(const key in dto) {
-        if(!(key in video)) continue;
-
-        video[key] = dto[key as keyof EditVideoDto];
-    }
+    video.allowComments = dto.allowComments ?? video.allowComments;
+    video.chapters = dto.chapters ?? video.chapters;
+    video.title = dto.title ?? video.title;
+    video.description = dto.description ?? video.description;
 
     await video.save();
 }
