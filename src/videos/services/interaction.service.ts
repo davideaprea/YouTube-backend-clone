@@ -44,3 +44,14 @@ export const toggleInteraction = async (userId: string, videoId: string) => {
     await video.save();
     await interaction.save();
 }
+
+export const deleteInteraction = async (userId: string, videoId: string) => {
+    const video = await findVideoById(videoId, { likes: 1, dislikes: 1 });
+    const interaction = await findInteraction(userId, videoId);
+
+    if (interaction.liked) video.likes--;
+    else video.dislikes--;
+
+    await video.save();
+    await VideoLikeDislikeModel.deleteOne({ _id: interaction._id });
+}
