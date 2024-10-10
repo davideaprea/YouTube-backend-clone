@@ -6,7 +6,7 @@ import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 import { User } from "../../auth/types/user.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { InteractionType } from "../types/interaction-type.enum";
-import { createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
+import { addView, createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
@@ -63,19 +63,11 @@ export const handleSearchVideos: CustomReqHandler = async (req, res, next): Prom
     res.status(200).json(results);
 }
 
-export const addView: CustomReqHandler = async (req, res, next): Promise<void> => {
+export const handleAddView: CustomReqHandler = async (req, res, next): Promise<void> => {
     const id: string = req.params.id;
 
-    const video = await VideoModel.findById(id, { views: 1 }).exec();
-
-    if (!video) {
-        return next(new HttpError(404));
-    }
-
-    video.views++;
-
     try {
-        await video.save();
+        await addView(id);
         res.status(204).send();
     } catch (e) {
         next(e);

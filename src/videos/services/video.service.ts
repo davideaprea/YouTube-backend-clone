@@ -70,3 +70,11 @@ export const getVideoPage = async (title: string, limit: number = 10, lastId?: s
         .sort({ _id: 1 })
         .limit(limit);
 }
+
+export const addView = async (id: string) => {
+    const video = await findVideoById(id);
+
+    video.views++;
+
+    video.save();
+}
