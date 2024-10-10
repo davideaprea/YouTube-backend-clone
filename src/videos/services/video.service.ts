@@ -55,7 +55,7 @@ export const getVideoPage = async (title: string, limit: number = 10, lastId?: s
     const query: Record<string, any> = { $text: { $search: title } };
 
     if (lastId) query._id = { $gt: lastId };
-    if (limit > 50) limit = 10;
+    if (limit > 50 || limit <= 0) limit = 10;
 
     return await VideoModel
         .find(query, {
