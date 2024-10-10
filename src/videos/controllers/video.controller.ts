@@ -5,6 +5,7 @@ import { User } from "../../auth/types/user.type";
 import { InteractionType } from "../types/interaction-type.enum";
 import { addView, createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
 import { addInteraction, deleteInteraction, toggleInteraction } from "../services/interaction.service";
+import { getOrSetCache } from "../../core/services/cache.service";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
@@ -67,6 +68,21 @@ export const handleAddView: CustomReqHandler = async (req, res, next): Promise<v
     try {
         await addView(id);
         res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
+}
+
+export const handleFindVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
+    try {
+        const id: string = req.params.id;
+        const video = await getOrSetCache(
+            "videos/" + id,
+            async () => await findVideoById(id),
+            3600
+        );
+        
+        res.status(200).json(video);
     } catch (e) {
         next(e);
     }

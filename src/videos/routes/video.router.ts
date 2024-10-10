@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyJwt } from "../../auth/middlewares/jwt-checker.middleware";
 import { multerConfig } from "../../core/constants/multer-config";
-import { handleAddInteraction, handleAddView, handleCreateVideo, handleDeleteVideo, handleEditVideo, handleRemoveInteraction, handleSearchVideos, handleEditInteraction } from "../controllers/video.controller";
+import { handleAddInteraction, handleAddView, handleCreateVideo, handleDeleteVideo, handleEditVideo, handleRemoveInteraction, handleSearchVideos, handleEditInteraction, handleFindVideo } from "../controllers/video.controller";
 import { addFilesToBody } from "../../core/middlewares/add-files-to-body.middleware";
 
 export const videoRouter: Router = Router();
@@ -17,6 +17,7 @@ videoRouter.route("/").post(
 );
 
 videoRouter.route("/:id")
+    .get(handleFindVideo)
     .delete(verifyJwt, handleDeleteVideo)
     .patch(verifyJwt, handleEditVideo);
 

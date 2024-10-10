@@ -1,10 +1,14 @@
 import { connect } from "mongoose";
 import { app } from ".";
 import { createFakeVideos } from "./core/utilities/create-fake-video";
+import { createClient } from "redis";
 
 connect(process.env.LOCAL_DB_URL!)
 .then(() => console.log("Successully connected to the database."))
 .catch(e => console.log("Couldn't connect to the database.", e));
+
+export const redisClient = createClient();
+redisClient.connect();
 
 const port: number = 3000;
 
