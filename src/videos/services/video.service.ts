@@ -7,7 +7,7 @@ import { Video } from "../types/video.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 
-export const createVideo = async (dto: VideoDto): Promise<any> => {
+export const createVideo = async (dto: VideoDto) => {
     /*TODO: Implement document and file deletion if creation fails.*/
     const { source, thumbnail, ...props } = dto;
 
@@ -24,7 +24,7 @@ export const createVideo = async (dto: VideoDto): Promise<any> => {
     });
 }
 
-export const findVideoById = async (id: string, projection?: ProjectionType<Video>): Promise<any> => {
+export const findVideoById = async (id: string, projection?: ProjectionType<Video>) => {
     const video = await VideoModel.findById(id, projection).exec();
 
     if (!video) throw new HttpError(404, "Video not found.");
@@ -32,7 +32,7 @@ export const findVideoById = async (id: string, projection?: ProjectionType<Vide
     return video;
 }
 
-export const deleteVideo = async (video: Video): Promise<void> => {
+export const deleteVideo = async (video: Video) => {
     /*TODO: Find a way to check if the user
     is actually the owner of this resource.*/
     await VideoModel.deleteOne({ _id: video._id });
@@ -77,4 +77,5 @@ export const addView = async (id: string) => {
     video.views++;
 
     video.save();
+    VideoModel.updateOne()
 }
