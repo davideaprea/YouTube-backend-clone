@@ -6,6 +6,7 @@ import { InteractionType } from "../types/interaction-type.enum";
 import { addView, createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
 import { addInteraction, deleteInteraction, toggleInteraction } from "../services/interaction.service";
 import { getOrSetCache } from "../../core/services/cache.service";
+import { redisClient } from "../../server";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
@@ -37,6 +38,7 @@ export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promi
         }
 
         await deleteVideo(video);
+        await redisClient.del("videos/" + videoId);
         res.status(204).send();
     } catch (e) {
         next(e);
