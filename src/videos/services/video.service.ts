@@ -6,6 +6,7 @@ import { VideoDto } from "../types/dtos/video-dto.type";
 import { Video } from "../types/video.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
+import { transactionHandler } from "../../core/utilities/transaction-handler";
 
 export const createVideo = async (dto: VideoDto) => {
     /*TODO: Implement document and file deletion if creation fails.*/
@@ -35,9 +36,11 @@ export const findVideoById = async (id: string, projection?: ProjectionType<Vide
 export const deleteVideo = async (video: Video) => {
     /*TODO: Find a way to check if the user
     is actually the owner of this resource.*/
-    await VideoModel.deleteOne({ _id: video._id });
-    await VideoLikeDislikeModel.deleteMany({ _id: video._id });
-    await deleteFile(video.source);
+    await transactionHandler(async () => {
+        await VideoModel.deleteOne({ _id: video._id });
+        await VideoLikeDislikeModel.deleteMany({ _id: video._id });
+        await deleteFile(video.source);
+    });
 }
 
 export const editVideo = async (id: string, dto: EditVideoDto) => {

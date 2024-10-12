@@ -9,7 +9,7 @@ export const createFakeVideo = (): Video => {
         thumbnail: faker.internet.url(),
         title: faker.commerce.productName(),
         description: faker.string.alphanumeric({ length: { min: 10, max: 5000 } }),
-        creator: new Types.ObjectId("6700ff3f3360a283057cbefa")
+        creator: new Types.ObjectId("670a4a6c7f85a46d78e936c3")
     }
 }
 
