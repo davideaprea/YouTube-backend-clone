@@ -5,7 +5,7 @@ import { User } from "../../auth/types/user.type";
 import { InteractionType } from "../types/interaction-type.enum";
 import { addView, createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
 import { addInteraction, deleteInteraction, toggleInteraction } from "../services/interaction.service";
-import { getOrSetCache } from "../../core/services/cache.service";
+import { checkAndSetCache, getOrSetCache } from "../../core/services/cache.service";
 import { redisClient } from "../../server";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
@@ -68,7 +68,11 @@ export const handleAddView: CustomReqHandler = async (req, res, next): Promise<v
     const id: string = req.params.id;
 
     try {
-        await addView(id);
+        checkAndSetCache(
+            id + "/views/" + req.ip,
+            async () => await addView(id),
+            600
+        );
         res.status(204).send();
     } catch (e) {
         next(e);

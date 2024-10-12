@@ -21,11 +21,11 @@ videoRouter.route("/:id")
     .delete(verifyJwt, handleDeleteVideo)
     .patch(verifyJwt, handleEditVideo);
 
-videoRouter.route("/:id/view").patch(handleAddView);
+videoRouter.route("/:id/views").patch(handleAddView);
 
-videoRouter.route("/:id/interaction/:interactionType").patch(verifyJwt, handleAddInteraction);
+videoRouter.route("/:id/interactions/:interactionType").patch(verifyJwt, handleAddInteraction);
 
-videoRouter.route("/:id/interaction")
+videoRouter.route("/:id/interactions")
     .delete(verifyJwt, handleRemoveInteraction)
     .patch(verifyJwt, handleEditInteraction);
 

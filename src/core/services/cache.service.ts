@@ -11,3 +11,11 @@ export const getOrSetCache = async (key: string, callback: Function, ttl: number
 
     return resourceValue;
 }
+
+export const checkAndSetCache = async (key: string, callback: Function, ttl: number) => {
+    if(await redisClient.exists(key)) return;
+
+    await callback();
+
+    redisClient.setEx(key, ttl, Date.now().toString());
+}

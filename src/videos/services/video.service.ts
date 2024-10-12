@@ -80,5 +80,4 @@ export const addView = async (id: string) => {
     video.views++;
 
     video.save();
-    VideoModel.updateOne()
 }
