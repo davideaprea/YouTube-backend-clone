@@ -7,12 +7,13 @@ import { addView, createVideo, deleteVideo, editVideo, findVideoById, getVideoPa
 import { addInteraction, deleteInteraction, toggleInteraction } from "../services/interaction.service";
 import { checkAndSetCache, getOrSetCache } from "../../core/services/cache.service";
 import { redisClient } from "../../server";
+import { checkUserOwnership } from "../../core/utilities/check-user-ownership";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
         const dto: VideoDto = req.body;
 
-        dto.creator = req.user!._id;
+        dto.userId = req.user!._id;
 
         const video = await createVideo(dto);
         res.status(201).json(video);
@@ -28,14 +29,12 @@ export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promi
             videoId,
             {
                 _id: 1,
-                creator: 1,
+                userId: 1,
                 source: 1
             }
         );
 
-        if (!video.creator.equals(req.user!._id)) {
-            return next(new HttpError(403, "You're not the creator of this video."));
-        }
+        checkUserOwnership(req.user!._id, video);
 
         await deleteVideo(video);
         await redisClient.del("videos/" + videoId);

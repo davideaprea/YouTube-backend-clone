@@ -6,7 +6,7 @@ import { timeProperty, userIdProperty } from "../constants/video-interaction.pro
 import { HttpError } from "../../core/utilities/http-error.class";
 
 const videoSchema = new Schema<Video>({
-    creator: userIdProperty,
+    userId: userIdProperty,
     createdAt: timeProperty,
     description: {
         type: String,

@@ -1,6 +1,5 @@
-import { Types } from "mongoose"
+import { UserRelatedObj } from "../../core/types/user-related-obj.type"
 
-export type UserInteraction = {
-    readonly userId: Types.ObjectId,
+export type UserInteraction = UserRelatedObj & {
     readonly time: Date
 }

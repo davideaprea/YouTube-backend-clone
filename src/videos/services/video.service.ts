@@ -63,13 +63,13 @@ export const getVideoPage = async (title: string, limit: number = 10, lastId?: s
     return await VideoModel
         .find(query, {
             _id: 1,
-            creator: 1,
+            userId: 1,
             createdAt: 1,
             thumbnail: 1,
             views: 1,
             title: 1
         })
-        .populate("creator", "name surname profilePic")
+        .populate("userId", "name surname profilePic")
         .sort({ _id: 1 })
         .limit(limit);
 }

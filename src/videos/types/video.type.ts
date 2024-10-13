@@ -1,10 +1,10 @@
 import { Types } from "mongoose"
 import { Likeable } from "./likeable.type"
 import { Dislikeable } from "./dislikeable.type"
+import { UserRelatedObj } from "../../core/types/user-related-obj.type"
 
-export type Video = Likeable & Dislikeable & {
+export type Video = UserRelatedObj & Likeable & Dislikeable & {
     readonly _id: Types.ObjectId,
-    readonly creator: Types.ObjectId,
     readonly createdAt: Date,
     title: string,
     description?: string,
