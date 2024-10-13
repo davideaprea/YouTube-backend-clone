@@ -19,7 +19,14 @@ videoRouter.route("/").post(
 videoRouter.route("/:id")
     .get(handleFindVideo)
     .delete(verifyJwt, handleDeleteVideo)
-    .patch(verifyJwt, handleEditVideo);
+    .patch(
+        verifyJwt,
+        multerConfig.fields([
+            { name: "thumbnail", maxCount: 1 }
+        ]),
+        addFilesToBody,
+        handleEditVideo
+    );
 
 videoRouter.route("/:id/views").patch(handleAddView);
 

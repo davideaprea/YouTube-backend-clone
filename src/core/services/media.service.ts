@@ -12,8 +12,7 @@ const s3Client = new S3Client({
     region: process.env.S3_BUCKET_REGION!
 });
 
-
-export const saveFile = async (file: Express.Multer.File, checkMime?: string): Promise<string | undefined> => {
+export const saveFile = async (file: Express.Multer.File, checkMime?: string): Promise<string> => {
     if (checkMime && !file.mimetype.startsWith(checkMime)) {
         throw new HttpError(400, "Please, provide a proper video source.");
     }
@@ -28,7 +27,7 @@ export const saveFile = async (file: Express.Multer.File, checkMime?: string): P
     const command: PutObjectCommand = new PutObjectCommand(sourceCommand);
 
     //await s3Client.send(command);
-    return sourceCommand.Key;
+    return sourceCommand.Key!;
 }
 
 export const deleteFile = async (fileName: string) => {

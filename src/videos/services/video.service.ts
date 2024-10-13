@@ -50,10 +50,19 @@ export const deleteVideo = async (id: string) => {
 export const editVideo = async (id: string, dto: EditVideoDto) => {
     const video = await findVideoById(id);
 
+    let thumbnailName: string | undefined;
+
+    if(dto.thumbnail) {
+        if(video.thumbnail) await deleteFile(video.thumbnail);
+
+        thumbnailName = await saveFile(dto.thumbnail);
+    }
+
     video.allowComments = dto.allowComments ?? video.allowComments;
     video.chapters = dto.chapters ?? video.chapters;
     video.title = dto.title ?? video.title;
     video.description = dto.description ?? video.description;
+    video.thumbnail = thumbnailName;
 
     await video.save();
 }
