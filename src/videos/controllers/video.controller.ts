@@ -3,10 +3,11 @@ import { HttpError } from "../../core/utilities/http-error.class";
 import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
 import { User } from "../../auth/types/user.type";
 import { InteractionType } from "../types/interaction-type.enum";
-import { addView, createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
+import { createVideo, deleteVideo, editVideo, findVideoById, getVideoPage } from "../services/video.service";
 import { addInteraction, deleteInteraction, toggleInteraction } from "../services/interaction.service";
 import { checkAndSetCache, getOrSetCache } from "../../core/services/cache.service";
 import { redisClient } from "../../server";
+import { VideoModel } from "../models/video.model";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
@@ -56,9 +57,12 @@ export const handleAddView: CustomReqHandler = async (req, res, next): Promise<v
     const id: string = req.params.id;
 
     try {
-        checkAndSetCache(
+        await checkAndSetCache(
             id + "/views/" + req.ip,
-            async () => await addView(id),
+            async () => await VideoModel.updateOne(
+                { _id: id },
+                { $inc: { views: 1 } }
+            ),
             600
         );
         res.status(204).send();
@@ -75,7 +79,7 @@ export const handleFindVideo: CustomReqHandler = async (req, res, next): Promise
             async () => await findVideoById(id),
             3600
         );
-        
+
         res.status(200).json(video);
     } catch (e) {
         next(e);

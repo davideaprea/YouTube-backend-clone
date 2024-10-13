@@ -52,8 +52,8 @@ export const editVideo = async (id: string, dto: EditVideoDto) => {
 
     let thumbnailName: string | undefined;
 
-    if(dto.thumbnail) {
-        if(video.thumbnail) await deleteFile(video.thumbnail);
+    if (dto.thumbnail) {
+        if (video.thumbnail) await deleteFile(video.thumbnail);
 
         thumbnailName = await saveFile(dto.thumbnail);
     }
@@ -85,12 +85,4 @@ export const getVideoPage = async (title: string, limit: number = 10, lastId?: s
         .populate("creator", "name surname profilePic")
         .sort({ _id: 1 })
         .limit(limit);
-}
-
-export const addView = async (id: string) => {
-    const video = await findVideoById(id);
-
-    video.views++;
-
-    video.save();
 }
