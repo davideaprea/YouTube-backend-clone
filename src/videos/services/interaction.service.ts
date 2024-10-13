@@ -1,7 +1,10 @@
+import { UpdateQuery } from "mongoose";
 import { HttpError } from "../../core/utilities/http-error.class";
 import { transactionHandler } from "../../core/utilities/transaction-handler";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
+import { VideoModel } from "../models/video.model";
 import { findVideoById } from "./video.service";
+import { Video } from "../types/video.type";
 
 export const findInteraction = async (userId: string, videoId: string) => {
     const interaction = await VideoLikeDislikeModel.findOne({ userId, videoId });
@@ -13,18 +16,18 @@ export const findInteraction = async (userId: string, videoId: string) => {
 
 export const addInteraction = async (userId: string, videoId: string, liked: boolean) => {
     await transactionHandler(async () => {
-        const video = await findVideoById(videoId);
-
         await VideoLikeDislikeModel.create({
             liked,
             userId: userId,
             videoId: videoId
         });
 
-        if (liked) video.likes++;
-        else video.dislikes++;
+        let operation: UpdateQuery<Video>;
 
-        await video.save();
+        if (liked) operation = { $inc: { likes: 1 } };
+        else operation = { $inc: { dislikes: 1 } };
+
+        await VideoModel.updateOne({ _id: videoId }, operation);
     });
 }
 
