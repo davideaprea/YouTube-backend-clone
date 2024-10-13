@@ -24,20 +24,8 @@ export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promi
 export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
         const videoId: string = req.params.id;
-        const video = await findVideoById(
-            videoId,
-            {
-                _id: 1,
-                creator: 1,
-                source: 1
-            }
-        );
 
-        if (!video.creator.equals(req.user!._id)) {
-            return next(new HttpError(403, "You're not the creator of this video."));
-        }
-
-        await deleteVideo(video);
+        await deleteVideo(videoId);
         await redisClient.del("videos/" + videoId);
         res.status(204).send();
     } catch (e) {
