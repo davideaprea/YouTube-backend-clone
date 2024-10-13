@@ -35,20 +35,18 @@ export const toggleInteraction = async (userId: string, videoId: string) => {
     await transactionHandler(async () => {
         const interaction = await findInteraction(userId, videoId);
 
-        const video = await findVideoById(videoId);
-
         interaction.liked = !interaction.liked;
 
+        let operation: UpdateQuery<Video>;
+
         if (!interaction.liked) {
-            video.dislikes++;
-            video.likes--;
+            operation = { $inc: { dislikes: 1, likes: -1 } };
         }
         else {
-            video.dislikes--;
-            video.likes++;
+            operation = { $inc: { dislikes: -1, likes: 1 } };
         }
 
-        await video.save();
+        await VideoModel.updateOne({ _id: videoId }, operation);
         await interaction.save();
     });
 }
