@@ -29,6 +29,12 @@ const videoSchema = new Schema<Video>({
         min: 0,
         required: true
     },
+    comments: {
+        type: Number,
+        default: 0,
+        min: 0,
+        required: true
+    },
     likes: likesDislikesProperty,
     dislikes: likesDislikesProperty,
     allowComments: {

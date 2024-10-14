@@ -9,7 +9,8 @@ export type Video = Likeable & Dislikeable & {
     title: string,
     description?: string,
     source: string,
-    views: number
+    views: number,
+    comments: number,
     thumbnail?: string
     allowComments: boolean,
     chapters?: {
