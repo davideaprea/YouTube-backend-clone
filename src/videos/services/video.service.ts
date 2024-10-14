@@ -33,22 +33,24 @@ export const findVideoById = async (id: string, projection?: ProjectionType<Vide
     return video;
 }
 
-export const deleteVideo = async (id: string) => {
+export const deleteVideo = async (id: string, userId: string) => {
     /*TODO: Find a way to check if the user
     is actually the owner of this resource.*/
     await transactionHandler(async session => {
         const video = await findVideoById(id, { _id: 1, source: 1, thumbnail: 1 });
 
-        await VideoModel.deleteOne({ _id: id }, { session });
-        await VideoLikeDislikeModel.deleteMany({ _id: id }, { session });
+        await VideoModel.deleteOne({ _id: id, creator: userId }, { session });
+        await VideoLikeDislikeModel.deleteMany({ _id: id, userId }, { session });
 
         await deleteFile(video.source);
         if (video.thumbnail) await deleteFile(video.thumbnail);
     });
 }
 
-export const editVideo = async (id: string, dto: EditVideoDto) => {
+export const editVideo = async (id: string, userId: string, dto: EditVideoDto) => {
     const video = await findVideoById(id);
+
+    if(video.creator.toString() != userId) return;
 
     let thumbnailName: string | undefined;
 

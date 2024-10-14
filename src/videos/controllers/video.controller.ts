@@ -25,8 +25,9 @@ export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promi
 export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
         const videoId: string = req.params.id;
+        const userId: string = req.user!._id.toString();
 
-        await deleteVideo(videoId);
+        await deleteVideo(videoId, userId);
         await redisClient.del("videos/" + videoId);
         res.status(204).send();
     } catch (e) {
@@ -36,7 +37,10 @@ export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promi
 
 export const handleEditVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
-        await editVideo(req.params.id, req.body);
+        const videoId: string = req.params.id;
+        const userId: string = req.user!._id.toString();
+
+        await editVideo(videoId, userId, req.body);
         res.status(204).send();
     } catch (e) {
         next(e);

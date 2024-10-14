@@ -15,17 +15,32 @@ export const createComment = async (dto: CommentDto) => {
     });
 }
 
-export const deleteComment = async (id: string) => {
+export const deleteComment = async (id: string, userId: string) => {
     transactionHandler(async session => {
-        await CommentModel.deleteMany(
-            {
-                $or: [
-                    { _id: id },
-                    { parentCommentId: id }
-                ]
-            },
+        const comment = await CommentModel.findOneAndDelete({ _id: id, userId }, { session });
+
+        if (!comment) return;
+
+        let deletedComments: number;
+
+        if (comment.parentCommentId) {
+            deletedComments = 1
+        }
+        else {
+            const delResult = await CommentModel.deleteMany(
+                { parentCommentId: id },
+                { session }
+            );
+
+            deletedComments = delResult.deletedCount + 1;
+        }
+
+        await VideoModel.updateOne(
+            { _id: comment.videoId },
+            { $inc: { comments: -deletedComments } },
             { session }
         );
+
         await CommentLikeDislikeModel.deleteMany({ commentId: id }, { session });
     });
 }
