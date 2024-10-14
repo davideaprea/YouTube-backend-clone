@@ -15,24 +15,27 @@ export const findInteraction = async (userId: string, videoId: string) => {
 }
 
 export const addInteraction = async (userId: string, videoId: string, liked: boolean) => {
-    await transactionHandler(async () => {
-        await VideoLikeDislikeModel.create({
-            liked,
-            userId: userId,
-            videoId: videoId
-        });
+    await transactionHandler(async session => {
+        await VideoLikeDislikeModel.create(
+            {
+                liked,
+                userId: userId,
+                videoId: videoId
+            },
+            { session }
+        );
 
         let operation: UpdateQuery<Video>;
 
         if (liked) operation = { $inc: { likes: 1 } };
         else operation = { $inc: { dislikes: 1 } };
 
-        await VideoModel.updateOne({ _id: videoId }, operation);
+        await VideoModel.updateOne({ _id: videoId }, operation, { session });
     });
 }
 
 export const toggleInteraction = async (userId: string, videoId: string) => {
-    await transactionHandler(async () => {
+    await transactionHandler(async session => {
         const interaction = await findInteraction(userId, videoId);
 
         interaction.liked = !interaction.liked;
@@ -46,13 +49,13 @@ export const toggleInteraction = async (userId: string, videoId: string) => {
             operation = { $inc: { dislikes: -1, likes: 1 } };
         }
 
-        await VideoModel.updateOne({ _id: videoId }, operation);
-        await interaction.save();
+        await VideoModel.updateOne({ _id: videoId }, operation, { session });
+        await interaction.save({ session });
     });
 }
 
 export const deleteInteraction = async (userId: string, videoId: string) => {
-    await transactionHandler(async () => {
+    await transactionHandler(async session => {
         const interaction = await findInteraction(userId, videoId);
 
         let operation: UpdateQuery<Video>;
@@ -64,7 +67,7 @@ export const deleteInteraction = async (userId: string, videoId: string) => {
             operation = { $inc: { likes: -1 } };
         }
 
-        await VideoModel.updateOne({ _id: videoId }, operation);
-        await VideoLikeDislikeModel.deleteOne({ _id: interaction._id });
+        await VideoModel.updateOne({ _id: videoId }, operation, { session });
+        await VideoLikeDislikeModel.deleteOne({ _id: interaction._id }, { session });
     });
 }

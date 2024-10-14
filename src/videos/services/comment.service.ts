@@ -5,7 +5,7 @@ import { VideoModel } from "../models/video.model";
 import { CommentDto } from "../types/dtos/comment-dto.type";
 
 export const createComment = async (dto: CommentDto) => {
-    return await transactionHandler(async (session) => {
+    return await transactionHandler(async session => {
         await VideoModel.updateOne(
             { _id: dto.videoId },
             { $inc: { comments: 1 } },
@@ -16,13 +16,16 @@ export const createComment = async (dto: CommentDto) => {
 }
 
 export const deleteComment = async (id: string) => {
-    transactionHandler(async () => {
-        await CommentModel.deleteMany({
-            $or: [
-                { _id: id },
-                { parentCommentId: id }
-            ]
-        });
-        await CommentLikeDislikeModel.deleteMany({ commentId: id });
+    transactionHandler(async session => {
+        await CommentModel.deleteMany(
+            {
+                $or: [
+                    { _id: id },
+                    { parentCommentId: id }
+                ]
+            },
+            { session }
+        );
+        await CommentLikeDislikeModel.deleteMany({ commentId: id }, { session });
     });
 }
