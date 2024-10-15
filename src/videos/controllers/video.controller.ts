@@ -8,6 +8,7 @@ import { addInteraction, deleteInteraction, toggleInteraction } from "../service
 import { checkAndSetCache, getOrSetCache } from "../../core/services/cache.service";
 import { redisClient } from "../../server";
 import { VideoModel } from "../models/video.model";
+import { VideoDocument } from "../types/documents/video-document.type";
 
 export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
@@ -52,7 +53,7 @@ export const handleSearchVideos: CustomReqHandler = async (req, res, next): Prom
     const title: string = req.params.title.replaceAll("+", " ");
     const limit: number = Number(req.params.limit);
 
-    const results = await getVideoPage(title, limit, lastId);
+    const results: VideoDocument[] = await getVideoPage(title, limit, lastId);
 
     res.status(200).json(results);
 }
@@ -78,7 +79,7 @@ export const handleAddView: CustomReqHandler = async (req, res, next): Promise<v
 export const handleFindVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
         const id: string = req.params.id;
-        const video = await getOrSetCache(
+        const video: VideoDocument = await getOrSetCache(
             "videos/" + id,
             async () => await findVideoById(id),
             3600
@@ -109,7 +110,7 @@ export const handleAddInteraction: CustomReqHandler = async (req, res, next): Pr
     }
 }
 
-export const handleEditInteraction: CustomReqHandler = async (req, res, next) => {
+export const handleEditInteraction: CustomReqHandler = async (req, res, next): Promise<void> => {
     const videoId: string = req.params.id;
     const user: User = req.user!;
 

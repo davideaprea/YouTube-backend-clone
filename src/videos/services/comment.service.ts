@@ -2,10 +2,11 @@ import { transactionHandler } from "../../core/utilities/transaction-handler";
 import { CommentLikeDislikeModel } from "../models/comment-like-or-dislike.model";
 import { CommentModel } from "../models/comment.model";
 import { VideoModel } from "../models/video.model";
+import { CommentDocument } from "../types/documents/comment-document.type";
 import { CommentDto } from "../types/dtos/comment-dto.type";
 
-export const createComment = async (dto: CommentDto) => {
-    return await transactionHandler(async session => {
+export const createComment = async (dto: CommentDto): Promise<CommentDocument> => {
+    return await transactionHandler<CommentDocument>(async session => {
         await VideoModel.updateOne(
             { _id: dto.videoId },
             { $inc: { comments: 1 } },
@@ -15,9 +16,9 @@ export const createComment = async (dto: CommentDto) => {
     });
 }
 
-export const deleteComment = async (id: string, userId: string) => {
-    transactionHandler(async session => {
-        const comment = await CommentModel.findOneAndDelete({ _id: id, userId }, { session });
+export const deleteComment = async (id: string, userId: string): Promise<void> => {
+    transactionHandler<void>(async session => {
+        const comment: CommentDocument | null = await CommentModel.findOneAndDelete({ _id: id, userId }, { session });
 
         if (!comment) return;
 

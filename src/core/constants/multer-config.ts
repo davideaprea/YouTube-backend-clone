@@ -1,5 +1,5 @@
-import multer, { memoryStorage } from "multer";
+import multer, { memoryStorage, Multer } from "multer";
 
-export const multerConfig = multer({
+export const multerConfig: Multer = multer({
     storage: memoryStorage()
 } as const);

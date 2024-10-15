@@ -6,6 +6,7 @@ import { HttpError } from "../../core/utilities/http-error.class";
 import { ChangePswDto } from "../types/change-psw-dto.type";
 import { JwtPayload } from "jsonwebtoken";
 import { User } from "../types/user.type";
+import { UserDocument } from "../types/user-document.type";
 
 export const register: RequestHandler = async (req, res, next): Promise<void> => {
     const { email } = req.body;
@@ -36,7 +37,7 @@ export const register: RequestHandler = async (req, res, next): Promise<void> =>
 
 export const login: RequestHandler = async (req, res, next): Promise<void> => {
     const credentials = req.body;
-    const user = await UserModel.findOne({ email: credentials?.email });
+    const user: UserDocument | null = await UserModel.findOne({ email: credentials?.email });
 
     if (!user || !bcrypt.compareSync(credentials.password, user.password)) {
         return next(new HttpError(400, "Incorrect email or password."));
@@ -56,7 +57,7 @@ export const changePsw: RequestHandler = async (req, res, next): Promise<void> =
     }
 
     const jwt: JwtPayload = decodeJwt(getJwtFromReq(req)!)!
-    const user = await UserModel.findOne({ email: jwt.email });
+    const user: UserDocument | null = await UserModel.findOne({ email: jwt.email });
 
     if (!user) return next(new HttpError(401, "Couldn't find user with this email."));
 

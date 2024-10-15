@@ -7,14 +7,15 @@ import { Video } from "../types/video.type";
 import { VideoLikeDislikeModel } from "../models/video-like-or-dislike.model";
 import { EditVideoDto } from "../types/dtos/edit-video-dto.type";
 import { transactionHandler } from "../../core/utilities/transaction-handler";
+import { VideoDocument } from "../types/documents/video-document.type";
 
-export const createVideo = async (dto: VideoDto) => {
+export const createVideo = async (dto: VideoDto): Promise<VideoDocument> => {
     /*TODO: Implement document and file deletion if creation fails.*/
     const { source, thumbnail, ...props } = dto;
 
     if (!source) throw new HttpError(400, "Video source file is missing.");
 
-    let sourceName = await saveFile(source, "video"), thumbnailName;
+    let sourceName: string = await saveFile(source, "video"), thumbnailName: string | undefined;
 
     if (thumbnail) thumbnailName = await saveFile(thumbnail, "image");
 
@@ -25,19 +26,17 @@ export const createVideo = async (dto: VideoDto) => {
     });
 }
 
-export const findVideoById = async (id: string, projection?: ProjectionType<Video>) => {
-    const video = await VideoModel.findById(id, projection).exec();
+export const findVideoById = async (id: string, projection?: ProjectionType<Video>): Promise<VideoDocument> => {
+    const video: VideoDocument | null = await VideoModel.findById(id, projection).exec();
 
     if (!video) throw new HttpError(404, "Video not found.");
 
     return video;
 }
 
-export const deleteVideo = async (id: string, userId: string) => {
-    /*TODO: Find a way to check if the user
-    is actually the owner of this resource.*/
+export const deleteVideo = async (id: string, userId: string): Promise<void> => {
     await transactionHandler(async session => {
-        const video = await findVideoById(id, { _id: 1, source: 1, thumbnail: 1 });
+        const video: VideoDocument = await findVideoById(id, { _id: 1, source: 1, thumbnail: 1 });
 
         await VideoModel.deleteOne({ _id: id, creator: userId }, { session });
         await VideoLikeDislikeModel.deleteMany({ _id: id, userId }, { session });
@@ -47,8 +46,8 @@ export const deleteVideo = async (id: string, userId: string) => {
     });
 }
 
-export const editVideo = async (id: string, userId: string, dto: EditVideoDto) => {
-    const video = await findVideoById(id);
+export const editVideo = async (id: string, userId: string, dto: EditVideoDto): Promise<void> => {
+    const video: VideoDocument = await findVideoById(id);
 
     if(video.creator.toString() != userId) return;
 
@@ -69,7 +68,7 @@ export const editVideo = async (id: string, userId: string, dto: EditVideoDto) =
     await video.save();
 }
 
-export const getVideoPage = async (title: string, limit: number = 10, lastId?: string) => {
+export const getVideoPage = async (title: string, limit: number = 10, lastId?: string): Promise<VideoDocument[]> => {
     const query: Record<string, any> = { $text: { $search: title } };
 
     if (lastId) query._id = { $gt: lastId };
