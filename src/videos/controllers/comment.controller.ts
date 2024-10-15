@@ -15,7 +15,10 @@ export const handleCreateComment: CustomReqHandler = async (req, res, next) => {
 
 export const handleDeleteComment: CustomReqHandler = async (req, res, next) => {
     try {
-        await deleteComment(req.params.id);
+        const videoId: string = req.params.id;
+        const userId: string = req.user!._id.toString();
+
+        await deleteComment(videoId, userId);
         res.status(204).send();
     } catch (e) {
         next(e);
