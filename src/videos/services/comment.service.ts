@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { transactionHandler } from "../../core/utilities/transaction-handler";
 import { CommentLikeDislikeModel } from "../models/comment-like-or-dislike.model";
 import { CommentModel } from "../models/comment.model";
@@ -18,22 +19,30 @@ export const createComment = async (dto: CommentDto): Promise<CommentDocument> =
 
 export const deleteComment = async (id: string, userId: string): Promise<void> => {
     transactionHandler<void>(async session => {
-        const comment: CommentDocument | null = await CommentModel.findOneAndDelete({ _id: id, userId }, { session });
+        const comment = await CommentModel.findOneAndDelete({ _id: id, userId }, { session });
 
         if (!comment) return;
 
-        let deletedComments: number;
+        const deletedDocumentIds: Types.ObjectId[] = [comment._id];
+        let deletedComments: number = 1;
 
-        if (comment.parentCommentId) {
-            deletedComments = 1
-        }
-        else {
+        if (!comment.parentCommentId) {
+            const replies = await CommentModel.find(
+                { parentCommentId: id },
+                { _id: 1 },
+                { session }
+            );
+
+            for (const reply of replies) {
+                deletedDocumentIds.push(reply._id);
+            }
+
             const delResult = await CommentModel.deleteMany(
                 { parentCommentId: id },
                 { session }
             );
 
-            deletedComments = delResult.deletedCount + 1;
+            deletedComments += delResult.deletedCount;
         }
 
         await VideoModel.updateOne(
@@ -42,6 +51,9 @@ export const deleteComment = async (id: string, userId: string): Promise<void> =
             { session }
         );
 
-        await CommentLikeDislikeModel.deleteMany({ commentId: id }, { session });
+        await CommentLikeDislikeModel.deleteMany(
+            { commentId: { $in: deletedDocumentIds } },
+            { session }
+        );
     });
 }
