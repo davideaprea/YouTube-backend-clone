@@ -38,4 +38,6 @@ commentSchema.pre("save", function (next) {
     next();
 });
 
+commentSchema.index({ videoId: 1, parentCommentId: 1 });
+
 export const CommentModel = model(VideoSchemaNames.COMMENT, commentSchema);

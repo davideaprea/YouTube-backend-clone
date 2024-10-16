@@ -6,6 +6,18 @@ import { VideoModel } from "../models/video.model";
 import { CommentDocument } from "../types/documents/comment-document.type";
 import { CommentDto } from "../types/dtos/comment-dto.type";
 
+export const getVideoComments = async (videoId: string, limit: number = 10, lastCommentId?: string): Promise<CommentDocument[]> => {
+    const query: Record<string, any> = { videoId };
+
+    if (lastCommentId) query._id = { $gt: lastCommentId };
+    if (limit > 50 || limit <= 0) limit = 10;
+
+    return await CommentModel
+        .find(query)
+        .sort({ _id: 1 })
+        .limit(limit);
+}
+
 export const createComment = async (dto: CommentDto): Promise<CommentDocument> => {
     return await transactionHandler<CommentDocument>(async session => {
         await VideoModel.updateOne(
@@ -17,9 +29,9 @@ export const createComment = async (dto: CommentDto): Promise<CommentDocument> =
     });
 }
 
-export const deleteComment = async (id: string, userId: string): Promise<void> => {
+export const deleteComment = async (videoId: string, commentId: string, userId: string): Promise<void> => {
     transactionHandler<void>(async session => {
-        const comment = await CommentModel.findOneAndDelete({ _id: id, userId }, { session });
+        const comment = await CommentModel.findOneAndDelete({ _id: commentId, userId }, { session });
 
         if (!comment) return;
 
@@ -28,7 +40,7 @@ export const deleteComment = async (id: string, userId: string): Promise<void> =
 
         if (!comment.parentCommentId) {
             const replies = await CommentModel.find(
-                { parentCommentId: id },
+                { videoId, parentCommentId: commentId },
                 { _id: 1 },
                 { session }
             );
@@ -38,7 +50,7 @@ export const deleteComment = async (id: string, userId: string): Promise<void> =
             }
 
             const delResult = await CommentModel.deleteMany(
-                { parentCommentId: id },
+                { videoId, parentCommentId: commentId },
                 { session }
             );
 
