@@ -43,9 +43,11 @@ export const login: RequestHandler = async (req, res, next): Promise<void> => {
         return next(new HttpError(400, "Incorrect email or password."));
     }
 
-    res.status(200).json({
-        username: user.email,
-        token: generateAuthJwt(user)
+    res
+    .status(200)
+    .header("Authorization", "Bearer " + generateAuthJwt(user))
+    .json({
+        username: user.email
     });
 };
 
