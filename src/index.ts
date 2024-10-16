@@ -8,11 +8,17 @@ import { HttpError } from './core/utilities/http-error.class';
 import cors from 'cors';
 import { videoRouter } from './videos/routes/video.router';
 import { commentRouter } from './videos/routes/comment.router';
-
+import rateLimit from 'express-rate-limit';
 
 export const app: Express = express();
 
 app.use(cors());
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 75,
+    standardHeaders: true,
+    legacyHeaders: false
+}));
 app.use(json());
 
 app.use("/v1/auth", authRouter);
