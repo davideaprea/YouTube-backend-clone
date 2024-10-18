@@ -23,7 +23,7 @@ export const verifyJwt: CustomReqHandler = async (req, res, next): Promise<void>
         return next(new HttpError(401));
     }
 
-    req.user = user;
+    req.appUser = user;
 
     next();
 }

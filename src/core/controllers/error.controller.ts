@@ -2,6 +2,7 @@ import { HttpError } from "../utilities/http-error.class";
 import mongoose from "mongoose";
 
 export const globalErrorHandler = (err: unknown, req: any, res: any, next: any): void => {
+    console.log(err);
     if (err instanceof HttpError) {
         res
             .status(err.status)

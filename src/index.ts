@@ -12,19 +12,9 @@ import rateLimit from 'express-rate-limit';
 import sanitize from 'express-mongo-sanitize'
 import helmet from 'helmet';
 import hpp from "hpp";
+import passport from 'passport';
 
 export const app: Express = express();
-
-app.use(cors());
-
-app.use(rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 75,
-    standardHeaders: true,
-    legacyHeaders: false
-}));
-
-app.use(json());
 
 app.use(helmet({
     contentSecurityPolicy: {
@@ -42,9 +32,22 @@ app.use(helmet({
     }
 }));
 
+app.use(hpp());
+
+app.use(cors());
+
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 75,
+    standardHeaders: true,
+    legacyHeaders: false
+}));
+
+app.use(json());
+
 app.use(sanitize());
 
-app.use(hpp());
+app.use(passport.initialize());
 
 app.use("/v1/auth", authRouter);
 

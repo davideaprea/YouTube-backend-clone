@@ -14,7 +14,7 @@ export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promi
     try {
         const dto: VideoDto = req.body;
 
-        dto.creator = req.user!._id;
+        dto.creator = req.appUser!._id;
 
         const video = await createVideo(dto);
         res.status(201).json(video);
@@ -26,7 +26,7 @@ export const handleCreateVideo: CustomReqHandler = async (req, res, next): Promi
 export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
         const videoId: string = req.params.id;
-        const userId: string = req.user!._id.toString();
+        const userId: string = req.appUser!._id.toString();
 
         await deleteVideo(videoId, userId);
         await redisClient.del("videos/" + videoId);
@@ -39,7 +39,7 @@ export const handleDeleteVideo: CustomReqHandler = async (req, res, next): Promi
 export const handleEditVideo: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
         const videoId: string = req.params.id;
-        const userId: string = req.user!._id.toString();
+        const userId: string = req.appUser!._id.toString();
 
         await editVideo(videoId, userId, req.body);
         res.status(204).send();
@@ -100,7 +100,7 @@ export const handleAddInteraction: CustomReqHandler = async (req, res, next): Pr
 
     const liked: boolean = action == InteractionType.LIKE ? true : false;
     const videoId: string = req.params.id;
-    const user: User = req.user!;
+    const user: User = req.appUser!;
 
     try {
         await addInteraction(user._id.toString(), videoId, liked);
@@ -112,7 +112,7 @@ export const handleAddInteraction: CustomReqHandler = async (req, res, next): Pr
 
 export const handleEditInteraction: CustomReqHandler = async (req, res, next): Promise<void> => {
     const videoId: string = req.params.id;
-    const user: User = req.user!;
+    const user: User = req.appUser!;
 
     try {
         await toggleInteraction(user._id.toString(), videoId);
@@ -126,7 +126,7 @@ export const handleRemoveInteraction: CustomReqHandler = async (req, res, next):
     const videoId: string = req.params.id;
 
     try {
-        await deleteInteraction(req.user!._id.toString(), videoId);
+        await deleteInteraction(req.appUser!._id.toString(), videoId);
         res.status(204).send();
     } catch (e) {
         next(e);

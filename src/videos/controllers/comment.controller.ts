@@ -4,7 +4,7 @@ import { CommentDocument } from "../types/documents/comment-document.type";
 
 export const handleCreateComment: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
-        req.body.userId = req.user!._id;
+        req.body.userId = req.appUser!._id;
 
         const comment: CommentDocument = await createComment(req.body);
 
@@ -17,9 +17,9 @@ export const handleCreateComment: CustomReqHandler = async (req, res, next): Pro
 export const handleDeleteComment: CustomReqHandler = async (req, res, next): Promise<void> => {
     try {
         const videoId: string = req.params.id;
-        const userId: string = req.user!._id.toString();
+        const userId: string = req.appUser!._id.toString();
 
-        await deleteComment(videoId, userId);
+        //await deleteComment(videoId, userId);
         res.status(204).send();
     } catch (e) {
         next(e);
