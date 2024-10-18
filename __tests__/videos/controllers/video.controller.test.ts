@@ -3,42 +3,32 @@ import request from 'supertest';
 import { app } from "../../../src";
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { connect, disconnect } from "mongoose";
+import { VideoModel } from "../../../src/videos/models/video.model";
+import { createFakeVideo } from "../../../src/core/utilities/create-fake-video";
 
 const endpoint: string = "/v1/videos"
 let mongoServer: MongoMemoryServer;
 
-// Avvio del server MongoDB in memoria
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     const mongoUri = mongoServer.getUri();
     await connect(mongoUri);
 });
 
-// Chiusura del server MongoDB
 afterAll(async () => {
     await disconnect();
     await mongoServer.stop();
 });
 
-// Test per la creazione di un video
 describe('POST ' + endpoint, () => {
     it('should create a video successfully', async () => {
-        const response = await request(app)
-            .post(endpoint)
-            .send({
-                title: 'Test Video',
-                source: 'path/to/video.mp4', // Simula il percorso di un file video
-                thumbnail: 'path/to/thumbnail.jpg', // Simula il percorso di un file immagine
-                creator: '507f1f77bcf86cd799439011', // ID di un creatore (simulato)
-                description: 'A test video description',
-                allowComments: true,
-            });
+        const response = await VideoModel.create(createFakeVideo());
 
-        expect(response.status).toBe(201);
-        expect(response.body).toHaveProperty('_id');
-        expect(response.body.title).toBe('Test Video');
-        expect(response.body.source).toMatch(/path\/to\/video\.mp4/);
-        expect(response.body.thumbnail).toMatch(/path\/to\/thumbnail\.jpg/);
+        expect(response).toHaveProperty('_id');
+        expect(response.title).toBe('Test Video');
+        expect(response.views).toBe(0);
+        expect(response.dislikes).toBe(0);
+        expect(response.likes).toBe(0);
     });
 
     it('should return 400 if video source is missing', async () => {

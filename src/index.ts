@@ -10,6 +10,8 @@ import { videoRouter } from './videos/routes/video.router';
 import { commentRouter } from './videos/routes/comment.router';
 import rateLimit from 'express-rate-limit';
 import sanitize from 'express-mongo-sanitize'
+import helmet from 'helmet';
+import hpp from "hpp";
 
 export const app: Express = express();
 
@@ -24,7 +26,25 @@ app.use(rateLimit({
 
 app.use(json());
 
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            "default-src": ["'none'"],
+            "script-src": ["'none'"],
+            "style-src": ["'none'"],
+            "img-src": ["'none'"],
+            "connect-src": ["'self'"],
+            "object-src": ["'none'"]
+        }
+    },
+    frameguard: {
+        action: "deny"
+    }
+}));
+
 app.use(sanitize());
+
+app.use(hpp());
 
 app.use("/v1/auth", authRouter);
 
