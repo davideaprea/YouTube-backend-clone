@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { changePsw, login, register, signWithGoogle } from "../controllers/auth.controller";
+import { changePsw, login, register } from "../controllers/auth.controller";
 import { verifyJwt } from "../middlewares/jwt-checker.middleware";
 import passport from "passport";
-import "../config/google-oauth.config";
+import { googleStrategyInit } from "../config/google-oauth.config";
+import { signWithGoogle } from "../controllers/google-oauth.controller";
+
+googleStrategyInit();
 
 export const authRouter: Router = Router();
 
@@ -21,13 +24,12 @@ authRouter.route("/google").get(
 authRouter.route("/google/redirect").get(
     passport.authenticate("google", {
         session: false,
-        successRedirect: "http://localhost:3000/v1/auth/google/success",
         failureRedirect: "http://localhost:3000/v1/auth/google/error"
     }),
     signWithGoogle
 );
 
-authRouter.route("/google/success").get(
+authRouter.route("/google/success/:jwt").get(
     (req, res) => {
         res.send("Success!");
     }

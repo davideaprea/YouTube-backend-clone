@@ -10,7 +10,6 @@ import { UserDocument } from "../types/user-document.type";
 import { SignOptionsModel } from "../models/sign-options.model";
 import { SignOptions } from "../types/sign-options.enum";
 import { LoginDto } from "../types/login-dto.type";
-import { CustomReqHandler } from "../../core/types/custom-req-handler.interface";
 
 export const register: RequestHandler = async (req, res, next): Promise<void> => {
     req.body.signOption = (await SignOptionsModel.findOne({ option: SignOptions.STANDARD }))!._id;
@@ -89,15 +88,4 @@ export const changePsw: RequestHandler = async (req, res, next): Promise<void> =
     }
 
     res.status(200).send("Password changed successfully.");
-}
-
-export const signWithGoogle: CustomReqHandler = (req, res) => {
-    const user = req.appUser!;
-
-    res
-        .status(200)
-        .header("Authorization", "Bearer " + generateAuthJwt(user))
-        .json({
-            email: user.email
-        });
 }
