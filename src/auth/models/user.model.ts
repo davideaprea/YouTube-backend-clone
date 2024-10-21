@@ -1,8 +1,10 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import bcrypt from 'bcrypt';
 import { Roles } from "../types/roles.enum";
 import { User } from "../types/user.type";
 import { AuthSchemaNames } from "../types/auth-schema-names.enum";
+import { SignOptionsModel } from "./sign-options.model";
+import { SignOptions } from "../types/sign-options.enum";
 
 const userSchema = new Schema<User>({
     name: {
@@ -31,7 +33,18 @@ const userSchema = new Schema<User>({
     },
     password: {
         type: String,
-        required: [true, "Password is required."],
+        validate: {
+            validator: async function (user: User): Promise<boolean> {
+                const signOptionDoc = await SignOptionsModel.findById(user.signOption);
+
+                if (signOptionDoc && signOptionDoc.option === SignOptions.STANDARD) {
+                    return !!user.password;
+                }
+
+                return true;
+            },
+            message: "Password is required for standard registration."
+        },
         match: [new RegExp(process.env.PSW_REGEX!), "Password must be at least 8 characters long, include a number, a special character, an uppercase character and a lowercase character."]
     },
     role: {
@@ -51,7 +64,13 @@ const userSchema = new Schema<User>({
         maxlength: [500, "The description max length is 500 characters."],
         trim: true
     },
-    profilePic: String
+    profilePic: String,
+    signOption: {
+        type: Schema.Types.ObjectId,
+        immutable: true,
+        required: true,
+        ref: AuthSchemaNames.SIGN_OPTIONS
+    }
 });
 
 userSchema.pre("save", async function (next) {

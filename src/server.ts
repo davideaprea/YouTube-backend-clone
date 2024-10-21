@@ -2,6 +2,7 @@ import { connect } from "mongoose";
 import { app } from ".";
 import { createFakeVideos } from "./core/utilities/create-fake-video";
 import { createClient } from "redis";
+import { signOptionsInit } from "./auth/services/sign-options.service";
 
 connect(process.env.LOCAL_DB_URL!)
 .then(() => console.log("Successully connected to the database."))
@@ -18,3 +19,4 @@ app.listen(
 );
 
 createFakeVideos(200);
+signOptionsInit();

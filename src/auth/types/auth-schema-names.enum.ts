@@ -1,3 +1,4 @@
 export enum AuthSchemaNames {
-    USER = "User"
+    USER = "User",
+    SIGN_OPTIONS = "SignOption"
 }

@@ -7,9 +7,12 @@ import { ChangePswDto } from "../types/change-psw-dto.type";
 import { JwtPayload } from "jsonwebtoken";
 import { User } from "../types/user.type";
 import { UserDocument } from "../types/user-document.type";
+import { SignOptionsModel } from "../models/sign-options.model";
+import { SignOptions } from "../types/sign-options.enum";
+import { LoginDto } from "../types/login-dto.type";
 
 export const register: RequestHandler = async (req, res, next): Promise<void> => {
-    const { email } = req.body;
+    req.body.signOption = (await SignOptionsModel.findOne({ option: SignOptions.STANDARD }))!._id;
 
     let user: User;
 
@@ -30,29 +33,37 @@ export const register: RequestHandler = async (req, res, next): Promise<void> =>
     }
 
     res.status(201).json({
-        email: email,
+        email: user.email,
         token: generateAuthJwt(user)
     });
 };
 
 export const login: RequestHandler = async (req, res, next): Promise<void> => {
-    const credentials = req.body;
-    const user: UserDocument | null = await UserModel.findOne({ email: credentials?.email });
+    const credentials: LoginDto = req.body;
 
-    if (!user || !bcrypt.compareSync(credentials.password, user.password)) {
+    if(!credentials.email || !credentials.password) {
+        return next(new HttpError(400, "Email and password are required."));
+    }
+
+    const user: UserDocument | null = await UserModel.findOne({ email: credentials?.email });
+    
+    if (
+        !user ||
+        !bcrypt.compareSync(credentials.password, user.password)
+    ) {
         return next(new HttpError(400, "Incorrect email or password."));
     }
 
     res
-    .status(200)
-    .header("Authorization", "Bearer " + generateAuthJwt(user))
-    .json({
-        username: user.email
-    });
+        .status(200)
+        .header("Authorization", "Bearer " + generateAuthJwt(user))
+        .json({
+            username: user.email
+        });
 };
 
 export const changePsw: RequestHandler = async (req, res, next): Promise<void> => {
-    const {confirmNewPsw, currentPsw, newPsw} = req.body as ChangePswDto;
+    const { confirmNewPsw, currentPsw, newPsw } = req.body as ChangePswDto;
 
     if (newPsw != confirmNewPsw) {
         return next(new HttpError(401, "New password doesn't match with the confirmation password."));
